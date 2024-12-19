@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_getit/flutter_getit.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -39,6 +41,14 @@ class MainApp extends StatelessWidget {
                     supportedLocales: const [
                       Locale('pt', 'BR'),
                     ],
+                    scrollBehavior: MaterialScrollBehavior().copyWith(
+                      dragDevices: {
+                        PointerDeviceKind.mouse,
+                        PointerDeviceKind.touch,
+                        PointerDeviceKind.stylus,
+                        PointerDeviceKind.unknown
+                      },
+                    ),
                     debugShowCheckedModeBanner: false,
                     title: "José Augusto ",
                     theme: UiConfig.lightTheme,
