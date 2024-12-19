@@ -1,0 +1,33 @@
+name: portfolio
+description: "Portfolio José Augusto."
+publish_to: "josemoura212@gmail.com"
+version: 0.1.0
+
+environment:
+  sdk: ^3.5.4
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  asyncstate: ^2.1.0
+  dio: ^5.7.0
+  flutter_getit: ^3.0.1
+  intl: ^0.20.1
+  loading_animation_widget: ^1.3.0
+  shared_preferences: ^2.3.4
+  signals_flutter: ^6.0.2
+  top_snackbar_flutter: ^3.1.0
+  validatorless: ^1.2.4
+
+dependency_overrides:
+  intl: ^0.20.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true
