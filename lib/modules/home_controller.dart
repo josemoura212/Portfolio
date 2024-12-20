@@ -10,7 +10,8 @@ class HomeController with MessageStateMixin {
     "Dashboard",
     "Perfil",
     "Certificados",
-  ]);
+    for (var i = 0; i < 40; i++) "key $i",
+  ]..shuffle());
 
   final Signal<List<Widget>> _generatedChildren = Signal<List<Widget>>([]);
 
@@ -24,6 +25,9 @@ class HomeController with MessageStateMixin {
             child: Center(
               child: Text(
                 e,
+                style: TextStyle(
+                  color: e.contains("key") ? Colors.transparent : Colors.white,
+                ),
               ),
             ),
           ),
@@ -36,6 +40,7 @@ class HomeController with MessageStateMixin {
   List<Widget> get generatedChildren => _generatedChildren.value;
 
   void onReorder(ReorderedListFunction reorderedListFunction) {
-    _items.value = reorderedListFunction(_items.value) as List<String>;
+    _items.set(reorderedListFunction(_items.value) as List<String>,
+        force: true);
   }
 }

@@ -32,24 +32,29 @@ class _HomePageState extends State<HomePage> with MessageViewMixin {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     return Scaffold(
-      body: Watch(
-        (_) => ReorderableBuilder(
-          scrollController: _scrollController,
-          onReorder: controller.onReorder,
-          children: controller.generatedChildren,
-          builder: (children) {
-            return GridView(
-              key: _gridViewKey,
-              controller: _scrollController,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 4,
-                mainAxisSpacing: 4,
-                crossAxisSpacing: 8,
-              ),
-              children: children,
-            );
-          },
+      body: SizedBox(
+        height: size.height * .9,
+        child: Watch(
+          (_) => ReorderableBuilder(
+            scrollController: _scrollController,
+            onReorder: controller.onReorder,
+            longPressDelay: Duration(milliseconds: 250),
+            builder: (children) {
+              return GridView(
+                key: _gridViewKey,
+                controller: _scrollController,
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 15,
+                  mainAxisSpacing: 4,
+                  crossAxisSpacing: 8,
+                ),
+                children: children,
+              );
+            },
+            children: controller.generatedChildren,
+          ),
         ),
       ),
     );
