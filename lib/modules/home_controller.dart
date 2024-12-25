@@ -1,63 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:portfolio/core/helpers/messages.dart';
 import 'package:portfolio/core/local_storage/local_storage.dart';
+import 'package:portfolio/modules/widgets/certificate_widget.dart';
 import 'package:signals_flutter/signals_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class HomeController with MessageStateMixin {
-  final LocalStorage _localStorage;
-  final Signal<List<String>> _items = Signal<List<String>>([]);
-  final Signal<List<String>> _backgroundItems = Signal<List<String>>([
-    "1.png",
-    "2.jpg",
-    "3.png",
-    "4.png",
-    "5.jpg",
-    "6.jpg",
-    "7.jpg",
-    "8.jpg",
-    "9.jpg",
-    "10.png",
-    "11.jpg",
-    "12.png",
-    "13.jpg",
-    "14.jpg",
-    "15.png",
-    "16.png",
-    "17.png",
-    "18.png",
-    "19.png",
-    "20.png",
-    "22.jpg",
-    "23.jpeg",
-    "24.jpeg",
-    "25.png",
-    "26.jpeg",
-    "27.png",
-    "28.png",
-    "29.png",
-    "30.png",
-    "31.png",
-    "32.png",
-    "33.png",
-    "34.png",
-    "35.png",
-    "36.png",
-    "37.png",
-    "38.png",
-    "39.png",
-    "40.png",
-    "41.png",
-    "42.png",
-    "43.png",
-  ]);
-
-  final Signal<List<Widget>> _generatedChildren = Signal<List<Widget>>([]);
-
   HomeController({required LocalStorage localStorage})
       : _localStorage = localStorage {
-    _initialize();
+    _init();
   }
+  final LocalStorage _localStorage;
+
+  late OverlayEntry _overlayEntry;
+
+  final Signal<Offset> _offset = Signal<Offset>(Offset.zero);
+  final Signal<List<String>> _items = Signal<List<String>>([]);
+  final Signal<List<Widget>> _generatedChildren = Signal<List<Widget>>([]);
 
   Future<void> _launchUrl(String url) async {
     final Uri url0 = Uri.parse(url);
@@ -66,8 +25,30 @@ class HomeController with MessageStateMixin {
     }
   }
 
-  Future<void> _initialize() async {
-    await init();
+  void _showOverlay(BuildContext context) {
+    _overlayEntry = OverlayEntry(
+      builder: (context) => Positioned(
+        key: Key("Certificate"),
+        top: _offset.value.dy,
+        left: _offset.value.dx,
+        width: 300,
+        height: 200,
+        child: GestureDetector(
+          onPanUpdate: (details) {
+            _offset.set(details.globalPosition, force: true);
+            _overlayEntry.markNeedsBuild();
+          },
+          child: CertificateWidget(
+            overlayEntry: _overlayEntry,
+          ),
+        ),
+      ),
+    );
+
+    Overlay.of(context).insert(_overlayEntry);
+  }
+
+  void generateChildrens(BuildContext context) {
     _generatedChildren.set(
         _items.value
             .map(
@@ -92,7 +73,7 @@ class HomeController with MessageStateMixin {
                             _launchUrl("https://github.com/josemoura212");
                             break;
                           case "Certificados":
-                            _launchUrl("https://google.com");
+                            _showOverlay(context);
                             break;
                         }
                       },
@@ -181,7 +162,7 @@ class HomeController with MessageStateMixin {
     await _localStorage.writeList("items", _items.value);
   }
 
-  Future<void> init() async {
+  Future<void> _init() async {
     final items = await _localStorage.readList("items");
     if (items != null) {
       _items.set(items, force: true);
@@ -200,4 +181,49 @@ class HomeController with MessageStateMixin {
       _items.set(items, force: true);
     }
   }
+
+  final Signal<List<String>> _backgroundItems = Signal<List<String>>([
+    "1.png",
+    "2.jpg",
+    "3.png",
+    "4.png",
+    "5.jpg",
+    "6.jpg",
+    "7.jpg",
+    "8.jpg",
+    "9.jpg",
+    "10.png",
+    "11.jpg",
+    "12.png",
+    "13.jpg",
+    "14.jpg",
+    "15.png",
+    "16.png",
+    "17.png",
+    "18.png",
+    "19.png",
+    "20.png",
+    "22.jpg",
+    "23.jpeg",
+    "24.jpeg",
+    "25.png",
+    "26.jpeg",
+    "27.png",
+    "28.png",
+    "29.png",
+    "30.png",
+    "31.png",
+    "32.png",
+    "33.png",
+    "34.png",
+    "35.png",
+    "36.png",
+    "37.png",
+    "38.png",
+    "39.png",
+    "40.png",
+    "41.png",
+    "42.png",
+    "43.png",
+  ]);
 }

@@ -35,6 +35,7 @@ class _HomePageState extends State<HomePage> with MessageViewMixin {
 
   @override
   Widget build(BuildContext context) {
+    controller.generateChildrens(context);
     final size = MediaQuery.of(context).size;
     return Scaffold(
       extendBodyBehindAppBar: true,
