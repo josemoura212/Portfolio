@@ -21,6 +21,7 @@ dependencies:
   top_snackbar_flutter: ^3.1.0
   validatorless: ^1.2.4
   reorderable_grid: ^1.0.10
+  url_launcher: ^6.3.1
 
 dependency_overrides:
   intl: ^0.20.1
@@ -32,3 +33,7 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/
+    - assets/background/
+    - assets/icons/

@@ -6,6 +6,51 @@ import 'package:signals_flutter/signals_flutter.dart';
 class HomeController with MessageStateMixin {
   final LocalStorage _localStorage;
   final Signal<List<String>> _items = Signal<List<String>>([]);
+  final Signal<List<String>> _backgroundItems = Signal<List<String>>([
+    "1.png",
+    "2.jpg",
+    "3.png",
+    "4.png",
+    "5.jpg",
+    "6.jpg",
+    "7.jpg",
+    "8.jpg",
+    "9.jpg",
+    "10.png",
+    "11.jpg",
+    "12.png",
+    "13.jpg",
+    "14.jpg",
+    "15.png",
+    "16.png",
+    "17.png",
+    "18.png",
+    "19.png",
+    "20.png",
+    "21.png",
+    "22.jpg",
+    "23.jpeg",
+    "24.jpeg",
+    "25.png",
+    "26.jpeg",
+    "27.png",
+    "28.png",
+    "29.png",
+    "30.png",
+    "31.png",
+    "32.png",
+    "33.png",
+    "34.png",
+    "35.png",
+    "36.png",
+    "37.png",
+    "38.png",
+    "39.png",
+    "40.png",
+    "41.png",
+    "42.png",
+    "43.png",
+  ]);
 
   final Signal<List<Widget>> _generatedChildren = Signal<List<Widget>>([]);
 
@@ -21,8 +66,10 @@ class HomeController with MessageStateMixin {
             .map(
               (e) => Container(
                 key: Key(e),
-                color: Colors.primaries[
-                    (_items.value.indexOf(e) % Colors.primaries.length)],
+                color: e.contains("key")
+                    ? Colors.transparent
+                    : Colors.primaries[
+                        (_items.value.indexOf(e) % Colors.primaries.length)],
                 child: Center(
                   child: Text(
                     e,
@@ -40,6 +87,7 @@ class HomeController with MessageStateMixin {
 
   List<String> get items => _items.value;
   List<Widget> get generatedChildren => _generatedChildren.value;
+  List<String> get backgroundItems => _backgroundItems.value;
 
   void onReorderCallback(int oldIndex, int newIndex) {
     final childs = _generatedChildren.value;
@@ -67,13 +115,15 @@ class HomeController with MessageStateMixin {
       _items.set(items, force: true);
     } else {
       final items = [
+        for (var i = 0; i <= 60; i++) "key $i",
         "MangaTrix",
         "Recibo Online",
         "Dashboard",
         "Perfil",
         "Certificados",
-        for (var i = 0; i < 79; i++) "key $i",
-      ]..shuffle();
+        for (var i = 0; i < 18; i++) "key $i",
+      ];
+      // ]..shuffle();
       await _localStorage.writeList("items", items);
       _items.set(items, force: true);
     }
