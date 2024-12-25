@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:portfolio/core/helpers/messages.dart';
 import 'package:portfolio/core/local_storage/local_storage.dart';
 import 'package:signals_flutter/signals_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class HomeController with MessageStateMixin {
   final LocalStorage _localStorage;
@@ -58,6 +59,13 @@ class HomeController with MessageStateMixin {
     _initialize();
   }
 
+  Future<void> _launchUrl(String url) async {
+    final Uri url0 = Uri.parse(url);
+    if (!await launchUrl(url0)) {
+      throw Exception('Could not launch $url');
+    }
+  }
+
   Future<void> _initialize() async {
     await init();
     _generatedChildren.set(
@@ -69,7 +77,25 @@ class HomeController with MessageStateMixin {
                     )
                   : InkWell(
                       key: Key(e),
-                      onDoubleTap: () {},
+                      onDoubleTap: () async {
+                        switch (e) {
+                          case "MangaTrix":
+                            _launchUrl("https://leitor.mangatrix.net");
+                            break;
+                          case "Recibo Online":
+                            _launchUrl("https://recibo.mangatrix.net");
+                            break;
+                          case "Dashboard":
+                            _launchUrl("https://google.com");
+                            break;
+                          case "GitHub":
+                            _launchUrl("https://github.com/josemoura212");
+                            break;
+                          case "Certificados":
+                            _launchUrl("https://google.com");
+                            break;
+                        }
+                      },
                       borderRadius: BorderRadius.circular(10),
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
