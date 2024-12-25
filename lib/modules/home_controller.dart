@@ -161,13 +161,13 @@ class HomeController with MessageStateMixin {
       _items.set(items, force: true);
     } else {
       final items = [
-        for (var i = 0; i <= 60; i++) "key $i",
+        for (var i = 0; i <= 59; i++) "key $i",
         "MangaTrix",
         "Recibo Online",
         "Dashboard",
         "GitHub",
         "Certificados",
-        for (var i = 0; i < 18; i++) "key $i",
+        for (var i = 0; i < 19; i++) "key $i",
       ];
       // ]..shuffle();
       await _localStorage.writeList("items", items);
