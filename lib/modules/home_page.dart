@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_getit/flutter_getit.dart';
-import 'package:flutter_reorderable_grid_view/widgets/reorderable_builder.dart';
 import 'package:portfolio/core/helpers/messages.dart';
 import 'package:portfolio/modules/home_controller.dart';
+import 'package:reorderable_grid/reorderable_grid.dart';
 import 'package:signals_flutter/signals_flutter.dart';
 
 class HomePage extends StatefulWidget {
@@ -34,26 +34,46 @@ class _HomePageState extends State<HomePage> with MessageViewMixin {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return Scaffold(
-      body: SizedBox(
-        height: size.height * .9,
-        child: Watch(
-          (_) => ReorderableBuilder(
-            scrollController: _scrollController,
-            onReorder: controller.onReorder,
-            longPressDelay: Duration(milliseconds: 250),
-            builder: (children) {
-              return GridView(
+      body: Column(
+        children: [
+          Flexible(
+            child: Watch(
+              (_) => ReorderableGridView.extent(
                 key: _gridViewKey,
-                controller: _scrollController,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 15,
-                  mainAxisSpacing: 4,
-                  crossAxisSpacing: 8,
-                ),
-                children: children,
-              );
-            },
-            children: controller.generatedChildren,
+                childAspectRatio: 1,
+                maxCrossAxisExtent: size.width / 14,
+                onReorder: controller.onReorderCallback,
+                children: controller.generatedChildren,
+              ),
+            ),
+          ),
+          Container(
+            color: Colors.green,
+            padding: const EdgeInsets.only(top: 5, bottom: 5, left: 10),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisSize: MainAxisSize.max,
+              children: [SizedBox(height: 62)],
+            ),
+          ),
+        ],
+      ),
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(left: 25),
+        child: Align(
+          alignment: Alignment.bottomLeft,
+          widthFactor: 45,
+          child: FloatingActionButton(
+            onPressed: () {},
+            backgroundColor: Colors.transparent,
+            mouseCursor: SystemMouseCursors.click,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(50),
+            ),
+            child: const CircleAvatar(
+              backgroundColor: Colors.white,
+              radius: 45,
+            ),
           ),
         ),
       ),

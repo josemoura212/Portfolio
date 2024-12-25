@@ -115,14 +115,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  flutter_reorderable_grid_view:
-    dependency: "direct main"
-    description:
-      name: flutter_reorderable_grid_view
-      sha256: "732bcb1b29d5130c11a70e6acec512941fafe241f0e80bffd93ca6e415819915"
-      url: "https://pub.dev"
-    source: hosted
-    version: "5.4.0"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -285,6 +277,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.8.3"
+  reorderable_grid:
+    dependency: "direct main"
+    description:
+      name: reorderable_grid
+      sha256: "0b9cd95ef0f070ef99f92affe9cf85a4aa127099cd1334e5940950ce58cd981d"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.10"
   shared_preferences:
     dependency: "direct main"
     description:

@@ -45,4 +45,16 @@ class SharedPreferenceImpl implements LocalStorage {
     final sp = await _instance;
     return sp.getBool(key);
   }
+
+  @override
+  Future<List<String>?> readList(String key) async {
+    final sp = await _instance;
+    return sp.getStringList(key);
+  }
+
+  @override
+  Future<void> writeList(String key, List<String> value) async {
+    final sp = await _instance;
+    sp.setStringList(key, value);
+  }
 }
