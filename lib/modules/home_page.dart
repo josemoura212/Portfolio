@@ -55,7 +55,7 @@ class _HomePageState extends State<HomePage> with MessageViewMixin {
               ),
               Container(
                 decoration: const BoxDecoration(
-                  color: Colors.black87,
+                  color: Colors.black54,
                   boxShadow: [
                     BoxShadow(
                       color: Colors.black54,

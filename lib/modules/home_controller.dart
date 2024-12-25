@@ -27,7 +27,6 @@ class HomeController with MessageStateMixin {
     "18.png",
     "19.png",
     "20.png",
-    "21.png",
     "22.jpg",
     "23.jpeg",
     "24.jpeg",
@@ -64,22 +63,69 @@ class HomeController with MessageStateMixin {
     _generatedChildren.set(
         _items.value
             .map(
-              (e) => Container(
-                key: Key(e),
-                color: e.contains("key")
-                    ? Colors.transparent
-                    : Colors.primaries[
-                        (_items.value.indexOf(e) % Colors.primaries.length)],
-                child: Center(
-                  child: Text(
-                    e,
-                    style: TextStyle(
-                      color:
-                          e.contains("key") ? Colors.transparent : Colors.white,
+              (e) => e.contains("key")
+                  ? Container(
+                      key: Key(e),
+                    )
+                  : InkWell(
+                      key: Key(e),
+                      onDoubleTap: () {},
+                      borderRadius: BorderRadius.circular(10),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Container(
+                            width: 80,
+                            height: 80,
+                            decoration: BoxDecoration(
+                                color: Colors.transparent,
+                                image: switch (e) {
+                                  "MangaTrix" => DecorationImage(
+                                      image: AssetImage(
+                                          "assets/icons/mangatrix.png"),
+                                      fit: BoxFit.cover,
+                                    ),
+                                  "Recibo Online" => DecorationImage(
+                                      image: AssetImage(
+                                          "assets/icons/recibo-online.png"),
+                                      fit: BoxFit.cover,
+                                    ),
+                                  "Dashboard" => DecorationImage(
+                                      image: AssetImage(
+                                          "assets/icons/dashboard.png"),
+                                      fit: BoxFit.cover,
+                                    ),
+                                  "GitHub" => DecorationImage(
+                                      image:
+                                          AssetImage("assets/icons/github.png"),
+                                      fit: BoxFit.cover,
+                                    ),
+                                  "Certificados" => DecorationImage(
+                                      image: AssetImage(
+                                          "assets/icons/certificate.png"),
+                                      fit: BoxFit.cover,
+                                    ),
+                                  _ => null,
+                                }),
+                          ),
+                          Text(
+                            e,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.white,
+                              shadows: [
+                                Shadow(
+                                  offset: Offset(0, 0),
+                                  blurRadius: 3.0,
+                                  color: Colors.black,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ),
-              ),
             )
             .toList(),
         force: true);
@@ -119,7 +165,7 @@ class HomeController with MessageStateMixin {
         "MangaTrix",
         "Recibo Online",
         "Dashboard",
-        "Perfil",
+        "GitHub",
         "Certificados",
         for (var i = 0; i < 18; i++) "key $i",
       ];
