@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:portfolio/core/helpers/messages.dart';
 import 'package:portfolio/core/local_storage/local_storage.dart';
@@ -28,6 +30,68 @@ class HomeController with MessageStateMixin {
     if (!await launchUrl(url0)) {
       throw Exception('Could not launch $url');
     }
+  }
+
+  void _showDetailMenu(BuildContext context, Offset offset,
+      {String? url, required TypeModel type}) {
+    // _overlayEntry.remove();
+
+    _overlayEntry = OverlayEntry(
+      builder: (context) => Watch(
+        (_) => Positioned(
+          key: UniqueKey(),
+          top: offset.dy,
+          left: offset.dx,
+          width: 200,
+          height: 200,
+          child: Material(
+            child: Container(
+              width: 200,
+              height: 200,
+              color: Colors.white,
+              child: Column(
+                children: [
+                  AppBar(
+                    toolbarHeight: 40,
+                    title: Text(type.toString()),
+                    automaticallyImplyLeading: false,
+                    actions: [
+                      IconButton(
+                        onPressed: () {
+                          _overlayEntry.remove();
+                        },
+                        icon: Icon(Icons.close),
+                      ),
+                    ],
+                  ),
+                  ListTile(
+                    title: Text(
+                      "Abrir",
+                      style: TextStyle(color: Colors.black),
+                    ),
+                    onTap: () {
+                      _overlayEntry.remove();
+                      _showOverlay(context, url: url, type: type);
+                    },
+                  ),
+                  ListTile(
+                    title: Text(
+                      "Abrir em nova aba",
+                      style: TextStyle(color: Colors.black),
+                    ),
+                    onTap: () {
+                      _overlayEntry.remove();
+                      _launchUrl(url!);
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+    Overlay.of(context).insert(_overlayEntry);
   }
 
   void _showOverlay(
@@ -74,8 +138,32 @@ class HomeController with MessageStateMixin {
                   ? Container(
                       key: UniqueKey(),
                     )
-                  : InkWell(
+                  : GestureDetector(
                       key: UniqueKey(),
+                      onSecondaryTapDown: (details) {
+                        final offset = details.globalPosition;
+
+                        log("offset: $offset");
+
+                        switch (e) {
+                          case "MangaTrix":
+                            _showDetailMenu(context, offset,
+                                type: TypeModel.mangatrix);
+                            break;
+                          case "Recibo Online":
+                            _showDetailMenu(context, offset,
+                                type: TypeModel.recibo);
+                            break;
+                          case "Dashboard":
+                            _showDetailMenu(context, offset,
+                                type: TypeModel.dashboard);
+                            break;
+                          case "GitHub":
+                            _showDetailMenu(context, offset,
+                                type: TypeModel.github);
+                            break;
+                        }
+                      },
                       onDoubleTap: () async {
                         switch (e) {
                           case "MangaTrix":
@@ -107,14 +195,9 @@ class HomeController with MessageStateMixin {
                             break;
                           case "Certificados":
                             _showOverlay(context, type: TypeModel.certificados);
-                            // showWindow(
-                            //   (overlay) =>
-                            //       CertificateWidget(overlayEntry: overlay),
-                            // );
                             break;
                         }
                       },
-                      borderRadius: BorderRadius.circular(10),
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
