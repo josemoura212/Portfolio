@@ -32,8 +32,7 @@ class HomeController with MessageStateMixin {
     }
   }
 
-  void _showDetailMenu(BuildContext context, Offset offset,
-      {String? url, required TypeModel type}) {
+  void _showDetailMenu(BuildContext context, Offset offset, TypeModel type) {
     // _overlayEntry.remove();
 
     _overlayEntry = OverlayEntry(
@@ -71,7 +70,7 @@ class HomeController with MessageStateMixin {
                     ),
                     onTap: () {
                       _overlayEntry.remove();
-                      _showOverlay(context, url: url, type: type);
+                      _showOverlay(context, url: type.url, type: type);
                     },
                   ),
                   ListTile(
@@ -81,7 +80,9 @@ class HomeController with MessageStateMixin {
                     ),
                     onTap: () {
                       _overlayEntry.remove();
-                      _launchUrl(url!);
+                      _launchUrl(
+                        type.url,
+                      );
                     },
                   ),
                 ],
@@ -147,27 +148,24 @@ class HomeController with MessageStateMixin {
 
                         switch (e) {
                           case "MangaTrix":
-                            _showDetailMenu(context, offset,
-                                type: TypeModel.mangatrix);
+                            _showDetailMenu(
+                                context, offset, TypeModel.mangatrix);
                             break;
                           case "Recibo Online":
-                            _showDetailMenu(context, offset,
-                                type: TypeModel.recibo);
+                            _showDetailMenu(context, offset, TypeModel.recibo);
                             break;
                           case "Dashboard":
-                            _showDetailMenu(context, offset,
-                                type: TypeModel.dashboard);
+                            _showDetailMenu(
+                                context, offset, TypeModel.dashboard);
                             break;
                           case "GitHub":
-                            _showDetailMenu(context, offset,
-                                type: TypeModel.github);
+                            _showDetailMenu(context, offset, TypeModel.github);
                             break;
                         }
                       },
                       onDoubleTap: () async {
                         switch (e) {
                           case "MangaTrix":
-                            // _launchUrl("https://leitor.mangatrix.net");
                             _showOverlay(
                               context,
                               url: "https://leitor.mangatrix.net",
@@ -175,7 +173,6 @@ class HomeController with MessageStateMixin {
                             );
                             break;
                           case "Recibo Online":
-                            // _launchUrl("https://recibo.mangatrix.net");
                             _showOverlay(
                               context,
                               url: "https://recibo.mangatrix.net",
@@ -183,7 +180,6 @@ class HomeController with MessageStateMixin {
                             );
                             break;
                           case "Dashboard":
-                            // _launchUrl("https://google.com");
                             _showOverlay(
                               context,
                               url: "https://google.com",
