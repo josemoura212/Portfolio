@@ -91,8 +91,7 @@ class _HomePageState extends State<HomePage> with MessageViewMixin {
                                   borderRadius: BorderRadius.circular(10),
                                 ),
                                 child: SizedBox(
-                                  child: Image.asset(
-                                      "assets/icons/certificate.png"),
+                                  child: Image.asset(controller.type.image),
                                 ),
                               ),
                             )

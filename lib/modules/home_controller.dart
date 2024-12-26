@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:portfolio/core/helpers/messages.dart';
 import 'package:portfolio/core/local_storage/local_storage.dart';
+import 'package:portfolio/models/type_model.dart';
 import 'package:portfolio/modules/widgets/certificate_widget.dart';
+import 'package:portfolio/modules/widgets/web_view_widget.dart';
 import 'package:signals_flutter/signals_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -19,6 +21,7 @@ class HomeController with MessageStateMixin {
   final Signal<List<Widget>> _generatedChildren = Signal<List<Widget>>([]);
   final Signal<bool> _showCertificate = Signal<bool>(false);
   final Signal<Size> _size = Signal<Size>(Size.zero);
+  final Signal<TypeModel> _type = Signal<TypeModel>(TypeModel.certificados);
 
   Future<void> _launchUrl(String url) async {
     final Uri url0 = Uri.parse(url);
@@ -27,7 +30,12 @@ class HomeController with MessageStateMixin {
     }
   }
 
-  void _showOverlay(BuildContext context) {
+  void _showOverlay(
+    BuildContext context, {
+    String? url,
+    required TypeModel type,
+  }) {
+    _type.set(type, force: true);
     final size = MediaQuery.of(context).size;
     _size.set(Size(size.width, size.height * .9), force: true);
     _overlayEntry = OverlayEntry(
@@ -43,9 +51,12 @@ class HomeController with MessageStateMixin {
               _offset.set(details.globalPosition, force: true);
               _overlayEntry.markNeedsBuild();
             },
-            child: CertificateWidget(
-              overlayEntry: _overlayEntry,
-            ),
+            child: url != null
+                ? WebViewWidget(
+                    overlayEntry: _overlayEntry, url: url, type: type)
+                : CertificateWidget(
+                    overlayEntry: _overlayEntry,
+                  ),
           ),
         ),
       ),
@@ -68,19 +79,34 @@ class HomeController with MessageStateMixin {
                       onDoubleTap: () async {
                         switch (e) {
                           case "MangaTrix":
-                            _launchUrl("https://leitor.mangatrix.net");
+                            // _launchUrl("https://leitor.mangatrix.net");
+                            _showOverlay(
+                              context,
+                              url: "https://leitor.mangatrix.net",
+                              type: TypeModel.mangatrix,
+                            );
                             break;
                           case "Recibo Online":
-                            _launchUrl("https://recibo.mangatrix.net");
+                            // _launchUrl("https://recibo.mangatrix.net");
+                            _showOverlay(
+                              context,
+                              url: "https://recibo.mangatrix.net",
+                              type: TypeModel.recibo,
+                            );
                             break;
                           case "Dashboard":
-                            _launchUrl("https://google.com");
+                            // _launchUrl("https://google.com");
+                            _showOverlay(
+                              context,
+                              url: "https://google.com",
+                              type: TypeModel.dashboard,
+                            );
                             break;
                           case "GitHub":
                             _launchUrl("https://github.com/josemoura212");
                             break;
                           case "Certificados":
-                            _showOverlay(context);
+                            _showOverlay(context, type: TypeModel.certificados);
                             // showWindow(
                             //   (overlay) =>
                             //       CertificateWidget(overlayEntry: overlay),
@@ -93,8 +119,8 @@ class HomeController with MessageStateMixin {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Container(
-                            width: 80,
-                            height: 80,
+                            width: 75,
+                            height: 75,
                             decoration: BoxDecoration(
                                 color: Colors.transparent,
                                 image: switch (e) {
@@ -130,7 +156,7 @@ class HomeController with MessageStateMixin {
                             e,
                             textAlign: TextAlign.center,
                             style: TextStyle(
-                              fontSize: 16,
+                              fontSize: 14,
                               color: Colors.white,
                               shadows: [
                                 Shadow(
@@ -154,6 +180,7 @@ class HomeController with MessageStateMixin {
   List<String> get backgroundItems => _backgroundItems.value;
   bool get showCertificate => _showCertificate.value;
   Size get size => _size.value;
+  TypeModel get type => _type.value;
 
   void setShowCertificate() {
     _showCertificate.set(!_showCertificate.value, force: true);
