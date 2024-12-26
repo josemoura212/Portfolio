@@ -18,7 +18,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> with MessageViewMixin {
   final controller = Injector.get<HomeController>();
-
   final _scrollController = ScrollController();
 
   @override
@@ -68,14 +67,40 @@ class _HomePageState extends State<HomePage> with MessageViewMixin {
                 ),
                 padding: const EdgeInsets.only(
                     top: 5, bottom: 5, left: 10, right: 10),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    SizedBox(height: 62),
-                    Spacer(),
-                    ClockWidget(),
-                  ],
+                child: Watch(
+                  (_) => Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      SizedBox(
+                        height: 62,
+                        width: 100,
+                      ),
+                      controller.showCertificate
+                          ? InkWell(
+                              onTap: () {
+                                controller.maximizer();
+                              },
+                              child: Container(
+                                height: 62,
+                                width: 150,
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 10, vertical: 5),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: SizedBox(
+                                  child: Image.asset(
+                                      "assets/icons/certificate.png"),
+                                ),
+                              ),
+                            )
+                          : const SizedBox.shrink(),
+                      Spacer(),
+                      ClockWidget(),
+                    ],
+                  ),
                 ),
               ),
             ],

@@ -17,6 +17,8 @@ class HomeController with MessageStateMixin {
   final Signal<Offset> _offset = Signal<Offset>(Offset.zero);
   final Signal<List<String>> _items = Signal<List<String>>([]);
   final Signal<List<Widget>> _generatedChildren = Signal<List<Widget>>([]);
+  final Signal<bool> _showCertificate = Signal<bool>(false);
+  final Signal<Size> _size = Signal<Size>(Size.zero);
 
   Future<void> _launchUrl(String url) async {
     final Uri url0 = Uri.parse(url);
@@ -26,26 +28,31 @@ class HomeController with MessageStateMixin {
   }
 
   void _showOverlay(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    _size.set(Size(size.width, size.height * .9), force: true);
     _overlayEntry = OverlayEntry(
-      builder: (context) => Positioned(
-        key: Key("Certificate"),
-        top: _offset.value.dy,
-        left: _offset.value.dx,
-        width: 300,
-        height: 200,
-        child: GestureDetector(
-          onPanUpdate: (details) {
-            _offset.set(details.globalPosition, force: true);
-            _overlayEntry.markNeedsBuild();
-          },
-          child: CertificateWidget(
-            overlayEntry: _overlayEntry,
+      builder: (context) => Watch(
+        (_) => Positioned(
+          key: Key("Certificate"),
+          top: _offset.value.dy,
+          left: _offset.value.dx,
+          width: _size.value.width,
+          height: _size.value.height,
+          child: GestureDetector(
+            onPanUpdate: (details) {
+              _offset.set(details.globalPosition, force: true);
+              _overlayEntry.markNeedsBuild();
+            },
+            child: CertificateWidget(
+              overlayEntry: _overlayEntry,
+            ),
           ),
         ),
       ),
     );
 
     Overlay.of(context).insert(_overlayEntry);
+    setShowCertificate();
   }
 
   void generateChildrens(BuildContext context) {
@@ -54,10 +61,10 @@ class HomeController with MessageStateMixin {
             .map(
               (e) => e.contains("key")
                   ? Container(
-                      key: Key(e),
+                      key: UniqueKey(),
                     )
                   : InkWell(
-                      key: Key(e),
+                      key: UniqueKey(),
                       onDoubleTap: () async {
                         switch (e) {
                           case "MangaTrix":
@@ -74,6 +81,10 @@ class HomeController with MessageStateMixin {
                             break;
                           case "Certificados":
                             _showOverlay(context);
+                            // showWindow(
+                            //   (overlay) =>
+                            //       CertificateWidget(overlayEntry: overlay),
+                            // );
                             break;
                         }
                       },
@@ -141,6 +152,20 @@ class HomeController with MessageStateMixin {
   List<String> get items => _items.value;
   List<Widget> get generatedChildren => _generatedChildren.value;
   List<String> get backgroundItems => _backgroundItems.value;
+  bool get showCertificate => _showCertificate.value;
+  Size get size => _size.value;
+
+  void setShowCertificate() {
+    _showCertificate.set(!_showCertificate.value, force: true);
+  }
+
+  void minimizer() {
+    _offset.set(Offset(1000, 1000), force: true);
+  }
+
+  void maximizer() {
+    _offset.set(Offset(0, 0), force: true);
+  }
 
   void onReorderCallback(int oldIndex, int newIndex) {
     final childs = _generatedChildren.value;
