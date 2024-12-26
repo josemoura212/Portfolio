@@ -20,7 +20,7 @@ class CertificateWidget extends StatelessWidget {
         child: Column(
           children: [
             AppBar(
-              title: Text('Mini Tela'),
+              title: Text('Certificados'),
               automaticallyImplyLeading: false,
               actions: [
                 IconButton(
