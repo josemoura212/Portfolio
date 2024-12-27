@@ -18,7 +18,7 @@ class IconWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = Injector.get<HomeController>();
 
-    late OverlayEntry overlayEntry;
+    // late OverlayEntry overlayEntry;
     final url = type.url;
     final name = type.toString();
     final icon = type.icon;
@@ -29,12 +29,15 @@ class IconWidget extends StatelessWidget {
       onPanUpdate: (details) =>
           controller.updatePosition(details.globalPosition, type),
       onSecondaryTapDown: (details) {
+        if (controller.overlay) {
+          controller.removeOverlay();
+        }
         Offset offset = details.globalPosition;
         offset = Offset(
-          offset.dx + 10,
-          offset.dy - 100,
+          offset.dx,
+          offset.dy - 200,
         );
-        overlayEntry = OverlayEntry(
+        controller.overlayEntry = OverlayEntry(
           builder: (context) => Watch(
             (_) => Positioned(
               key: UniqueKey(),
@@ -56,7 +59,7 @@ class IconWidget extends StatelessWidget {
                         actions: [
                           IconButton(
                             onPressed: () {
-                              overlayEntry.remove();
+                              controller.removeOverlay();
                             },
                             icon: Icon(Icons.close),
                           ),
@@ -68,8 +71,7 @@ class IconWidget extends StatelessWidget {
                           style: TextStyle(color: Colors.black),
                         ),
                         onTap: () {
-                          overlayEntry.remove();
-                          // _showOverlay(context, url: type.url, type: type);
+                          controller.removeOverlay();
                         },
                       ),
                       ListTile(
@@ -78,10 +80,7 @@ class IconWidget extends StatelessWidget {
                           style: TextStyle(color: Colors.black),
                         ),
                         onTap: () {
-                          overlayEntry.remove();
-                          // launchUrlNew(
-                          //   type.url
-                          // );
+                          controller.removeOverlay();
                         },
                       ),
                     ],
@@ -91,13 +90,14 @@ class IconWidget extends StatelessWidget {
             ),
           ),
         );
-        Overlay.of(context).insert(overlayEntry);
+        controller.setOverlay(true);
+        Overlay.of(context).insert(controller.overlayEntry);
       },
       onDoubleTap: () {
         controller.setType(type);
         final size = MediaQuery.of(context).size;
         controller.setSizeWindow(size);
-        overlayEntry = OverlayEntry(
+        controller.overlayEntry = OverlayEntry(
           builder: (context) => Watch(
             (_) => Positioned(
               key: Key("Certificate"),
@@ -108,51 +108,69 @@ class IconWidget extends StatelessWidget {
               child: GestureDetector(
                 onPanUpdate: (details) {
                   controller.setOffsetWindow(details.globalPosition);
-                  overlayEntry.markNeedsBuild();
+                  controller.overlayEntry.markNeedsBuild();
                 },
                 child: url != ""
                     ? WebViewWidget(
-                        overlayEntry: overlayEntry, url: url, type: type)
+                        overlayEntry: controller.overlayEntry,
+                        url: url,
+                        type: type)
                     : CertificateWidget(
-                        overlayEntry: overlayEntry,
+                        overlayEntry: controller.overlayEntry,
                       ),
               ),
             ),
           ),
         );
-
-        Overlay.of(context).insert(overlayEntry);
+        controller.setOverlay(true);
+        Overlay.of(context).insert(controller.overlayEntry);
       },
-      child: Column(
-        mainAxisSize: MainAxisSize.max,
-        children: [
-          Container(
-            width: 75,
-            height: 75,
-            decoration: BoxDecoration(
-              color: Colors.transparent,
-              image: DecorationImage(
-                image: AssetImage(icon),
-                fit: BoxFit.cover,
-              ),
+      onTap: () {
+        controller.setType(type);
+      },
+      child: Watch(
+        (_) => Container(
+          decoration: BoxDecoration(
+            color: Colors.transparent,
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(
+              color:
+                  controller.type == type ? Colors.white54 : Colors.transparent,
+              width: 2,
             ),
           ),
-          Text(
-            name,
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.white,
-              shadows: [
-                Shadow(
-                  offset: Offset(0, 0),
-                  blurRadius: 3.0,
-                  color: Colors.black,
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              Container(
+                width: 75,
+                height: 75,
+                decoration: BoxDecoration(
+                  color: Colors.transparent,
+                  image: DecorationImage(
+                    image: AssetImage(icon),
+                    fit: BoxFit.cover,
+                  ),
                 ),
-              ],
-            ),
+              ),
+              Text(
+                name,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.white,
+                  shadows: [
+                    Shadow(
+                      offset: Offset(0, 0),
+                      blurRadius: 3.0,
+                      color: Colors.black,
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }

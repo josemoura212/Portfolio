@@ -18,20 +18,42 @@ class HomeController with MessageStateMixin {
   final Signal<Offset> _position3 = Signal<Offset>(Offset.zero);
   final Signal<Offset> _position4 = Signal<Offset>(Offset.zero);
   final Signal<Offset> _position5 = Signal<Offset>(Offset.zero);
-  final Signal<TypeModel> _type = Signal<TypeModel>(TypeModel.certificados);
+  final Signal<OverlayEntry> _overlayEntry =
+      Signal<OverlayEntry>(OverlayEntry(builder: (_) => Container()));
+  final Signal<bool> _overlay = Signal<bool>(false);
+  final Signal<TypeModel?> _type = Signal<TypeModel?>(null);
   final Signal<Size> _sizeWindow = Signal<Size>(Size.zero);
   final Signal<Offset> _offsetWindow = Signal<Offset>(Offset.zero);
   final Signal<bool> _showCertificate = Signal<bool>(false);
 
-  Offset get position1 => _position1.value;
-  Offset get position2 => _position2.value;
-  Offset get position3 => _position3.value;
-  Offset get position4 => _position4.value;
-  Offset get position5 => _position5.value;
+  Offset getPosition(TypeModel type) => switch (type) {
+        TypeModel.mangatrix => _position1.value,
+        TypeModel.recibo => _position2.value,
+        TypeModel.dashboard => _position3.value,
+        TypeModel.github => _position4.value,
+        TypeModel.certificados => _position5.value,
+      };
+
+  OverlayEntry get overlayEntry => _overlayEntry.value;
+  bool get overlay => _overlay.value;
+
   Offset get offsetWindow => _offsetWindow.value;
   Size get sizeWidnow => _sizeWindow.value;
-  TypeModel get type => _type.value;
+  TypeModel? get type => _type.value;
   bool get showCertificate => _showCertificate.value;
+
+  set overlayEntry(OverlayEntry overlayEntry) {
+    _overlayEntry.set(overlayEntry, force: true);
+  }
+
+  void setOverlay(bool overlay) {
+    _overlay.set(overlay, force: true);
+  }
+
+  void removeOverlay() {
+    _overlayEntry.value.remove();
+    _overlay.set(false, force: true);
+  }
 
   double _roundPosition(double position) {
     return (position / 100).round() * 100;
@@ -51,13 +73,13 @@ class HomeController with MessageStateMixin {
     );
     switch (type) {
       case TypeModel.mangatrix:
-        _position1.set(newOffset, force: true);
         if (_position2.value == newOffset ||
             _position3.value == newOffset ||
             _position4.value == newOffset ||
             _position5.value == newOffset) {
           newOffset = Offset(newOffset.dx, newOffset.dy - 100);
         }
+        _position1.set(newOffset, force: true);
         break;
       case TypeModel.recibo:
         if (_position1.value == newOffset ||

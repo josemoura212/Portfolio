@@ -42,36 +42,36 @@ class _HomePageState extends State<HomePage> with MessageViewMixin {
                 (_) => Stack(
                   children: [
                     Positioned(
-                      top: controller.position1.dy,
-                      left: controller.position1.dx,
+                      top: controller.getPosition(TypeModel.mangatrix).dy,
+                      left: controller.getPosition(TypeModel.mangatrix).dx,
                       width: 100,
                       height: 100,
                       child: IconWidget(type: TypeModel.mangatrix),
                     ),
                     Positioned(
-                      top: controller.position2.dy,
-                      left: controller.position2.dx,
+                      top: controller.getPosition(TypeModel.recibo).dy,
+                      left: controller.getPosition(TypeModel.recibo).dx,
                       width: 100,
                       height: 100,
                       child: IconWidget(type: TypeModel.recibo),
                     ),
                     Positioned(
-                      top: controller.position3.dy,
-                      left: controller.position3.dx,
+                      top: controller.getPosition(TypeModel.dashboard).dy,
+                      left: controller.getPosition(TypeModel.dashboard).dx,
                       width: 100,
                       height: 100,
                       child: IconWidget(type: TypeModel.dashboard),
                     ),
                     Positioned(
-                      top: controller.position4.dy,
-                      left: controller.position4.dx,
+                      top: controller.getPosition(TypeModel.github).dy,
+                      left: controller.getPosition(TypeModel.github).dx,
                       width: 100,
                       height: 100,
                       child: IconWidget(type: TypeModel.github),
                     ),
                     Positioned(
-                      top: controller.position5.dy,
-                      left: controller.position5.dx,
+                      top: controller.getPosition(TypeModel.certificados).dy,
+                      left: controller.getPosition(TypeModel.certificados).dx,
                       width: 100,
                       height: 100,
                       child: IconWidget(type: TypeModel.certificados),
@@ -118,7 +118,7 @@ class _HomePageState extends State<HomePage> with MessageViewMixin {
                                 borderRadius: BorderRadius.circular(10),
                               ),
                               child: SizedBox(
-                                child: Image.asset(controller.type.icon),
+                                child: Image.asset(controller.type!.icon),
                               ),
                             ),
                           )
