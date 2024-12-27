@@ -22,15 +22,25 @@ class BackgroundImageWidget extends StatelessWidget {
       builder: (context, snapshot) {
         final list = controller.backgroundItems;
         final image = list[(Random().nextInt(list.length))];
-        return Container(
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage("assets/background/$image"),
-              // image: AssetImage("assets/background.png"),
-              fit: BoxFit.cover,
+        return GestureDetector(
+          onTap: () {
+            controller.removeOverlayDetail();
+            controller.removeType();
+          },
+          onSecondaryTap: () {
+            controller.removeOverlayDetail();
+            controller.removeType();
+          },
+          child: Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage("assets/background/$image"),
+                // image: AssetImage("assets/background.png"),
+                fit: BoxFit.cover,
+              ),
             ),
+            child: child,
           ),
-          child: child,
         );
       },
     );

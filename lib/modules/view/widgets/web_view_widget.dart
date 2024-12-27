@@ -5,12 +5,7 @@ import 'package:portfolio/modules/core/home_controller.dart';
 import 'package:webview_all/webview_all.dart';
 
 class WebViewWidget extends StatelessWidget {
-  const WebViewWidget(
-      {super.key,
-      required this.overlayEntry,
-      required this.url,
-      required this.type});
-  final OverlayEntry overlayEntry;
+  const WebViewWidget({super.key, required this.url, required this.type});
   final String url;
   final TypeModel type;
 
@@ -46,7 +41,7 @@ class WebViewWidget extends StatelessWidget {
                 IconButton(
                   icon: Icon(Icons.close),
                   onPressed: () {
-                    overlayEntry.remove();
+                    controller.removeOverlayMenu();
                     controller.setShowCertificate();
                   },
                 ),

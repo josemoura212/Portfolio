@@ -3,8 +3,7 @@ import 'package:flutter_getit/flutter_getit.dart';
 import 'package:portfolio/modules/core/home_controller.dart';
 
 class CertificateWidget extends StatelessWidget {
-  const CertificateWidget({super.key, required this.overlayEntry});
-  final OverlayEntry overlayEntry;
+  const CertificateWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +37,7 @@ class CertificateWidget extends StatelessWidget {
                 IconButton(
                   icon: Icon(Icons.close),
                   onPressed: () {
-                    overlayEntry.remove();
+                    controller.removeOverlayMenu();
                     controller.setShowCertificate();
                   },
                 ),

@@ -18,13 +18,14 @@ class HomeController with MessageStateMixin {
   final Signal<Offset> _position3 = Signal<Offset>(Offset.zero);
   final Signal<Offset> _position4 = Signal<Offset>(Offset.zero);
   final Signal<Offset> _position5 = Signal<Offset>(Offset.zero);
-  final Signal<OverlayEntry> _overlayEntry =
-      Signal<OverlayEntry>(OverlayEntry(builder: (_) => Container()));
-  final Signal<bool> _overlay = Signal<bool>(false);
+  final Signal<OverlayEntry?> _overlayEntryDetail = Signal<OverlayEntry?>(null);
+  final Signal<OverlayEntry?> _overlayEntryMenu = Signal<OverlayEntry?>(null);
+
   final Signal<TypeModel?> _type = Signal<TypeModel?>(null);
   final Signal<Size> _sizeWindow = Signal<Size>(Size.zero);
   final Signal<Offset> _offsetWindow = Signal<Offset>(Offset.zero);
   final Signal<bool> _showCertificate = Signal<bool>(false);
+  final Signal<bool> _overlayDetail = Signal<bool>(false);
 
   Offset getPosition(TypeModel type) => switch (type) {
         TypeModel.mangatrix => _position1.value,
@@ -34,25 +35,31 @@ class HomeController with MessageStateMixin {
         TypeModel.certificados => _position5.value,
       };
 
-  OverlayEntry get overlayEntry => _overlayEntry.value;
-  bool get overlay => _overlay.value;
+  OverlayEntry? get getOverlayEntryDetail => _overlayEntryDetail.value;
+  OverlayEntry? get getOverlayEntryMenu => _overlayEntryMenu.value;
 
   Offset get offsetWindow => _offsetWindow.value;
   Size get sizeWidnow => _sizeWindow.value;
   TypeModel? get type => _type.value;
   bool get showCertificate => _showCertificate.value;
+  bool get overlayDetail => _overlayDetail.value;
 
-  set overlayEntry(OverlayEntry overlayEntry) {
-    _overlayEntry.set(overlayEntry, force: true);
+  set overlayEntryDetail(OverlayEntry overlayEntry) {
+    _overlayEntryDetail.set(overlayEntry, force: true);
+    _overlayDetail.set(true, force: true);
   }
 
-  void setOverlay(bool overlay) {
-    _overlay.set(overlay, force: true);
+  set overlayEntryMenu(OverlayEntry overlayEntry) {
+    _overlayEntryMenu.set(overlayEntry, force: true);
   }
 
-  void removeOverlay() {
-    _overlayEntry.value.remove();
-    _overlay.set(false, force: true);
+  void removeOverlayDetail() {
+    _overlayEntryDetail.value?.remove();
+    _overlayDetail.set(false, force: true);
+  }
+
+  void removeOverlayMenu() {
+    _overlayEntryMenu.value?.remove();
   }
 
   double _roundPosition(double position) {
@@ -130,6 +137,10 @@ class HomeController with MessageStateMixin {
 
   void setType(TypeModel type) {
     _type.set(type, force: true);
+  }
+
+  void removeType() {
+    _type.set(null, force: true);
   }
 
   void setSizeWindow(Size size) {

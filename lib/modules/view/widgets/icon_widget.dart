@@ -18,112 +18,18 @@ class IconWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = Injector.get<HomeController>();
 
-    // late OverlayEntry overlayEntry;
     final url = type.url;
     final name = type.toString();
     final icon = type.icon;
-    final sizeWindow = controller.sizeWidnow;
-    final offsetWindow = controller.offsetWindow;
 
     return GestureDetector(
       onPanUpdate: (details) =>
           controller.updatePosition(details.globalPosition, type),
       onSecondaryTapDown: (details) {
-        if (controller.overlay) {
-          controller.removeOverlay();
-        }
-        Offset offset = details.globalPosition;
-        offset = Offset(
-          offset.dx,
-          offset.dy - 200,
-        );
-        controller.overlayEntry = OverlayEntry(
-          builder: (context) => Watch(
-            (_) => Positioned(
-              key: UniqueKey(),
-              top: offset.dy,
-              left: offset.dx,
-              width: 200,
-              height: 200,
-              child: Material(
-                child: Container(
-                  width: 200,
-                  height: 200,
-                  color: Colors.white,
-                  child: Column(
-                    children: [
-                      AppBar(
-                        toolbarHeight: 40,
-                        title: Text(type.toString()),
-                        automaticallyImplyLeading: false,
-                        actions: [
-                          IconButton(
-                            onPressed: () {
-                              controller.removeOverlay();
-                            },
-                            icon: Icon(Icons.close),
-                          ),
-                        ],
-                      ),
-                      ListTile(
-                        title: Text(
-                          "Abrir",
-                          style: TextStyle(color: Colors.black),
-                        ),
-                        onTap: () {
-                          controller.removeOverlay();
-                        },
-                      ),
-                      ListTile(
-                        title: Text(
-                          "Abrir em nova aba",
-                          style: TextStyle(color: Colors.black),
-                        ),
-                        onTap: () {
-                          controller.removeOverlay();
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ),
-        );
-        controller.setOverlay(true);
-        Overlay.of(context).insert(controller.overlayEntry);
+        showDetail(controller, details, context);
       },
       onDoubleTap: () {
-        controller.setType(type);
-        final size = MediaQuery.of(context).size;
-        controller.setSizeWindow(size);
-        controller.overlayEntry = OverlayEntry(
-          builder: (context) => Watch(
-            (_) => Positioned(
-              key: Key("Certificate"),
-              top: offsetWindow.dy,
-              left: offsetWindow.dx,
-              width: sizeWindow.width,
-              height: sizeWindow.height,
-              child: GestureDetector(
-                onPanUpdate: (details) {
-                  controller.setOffsetWindow(details.globalPosition);
-                  controller.overlayEntry.markNeedsBuild();
-                },
-                child: url != ""
-                    ? WebViewWidget(
-                        overlayEntry: controller.overlayEntry,
-                        url: url,
-                        type: type)
-                    : CertificateWidget(
-                        overlayEntry: controller.overlayEntry,
-                      ),
-              ),
-            ),
-          ),
-        );
-        controller.setOverlay(true);
-        Overlay.of(context).insert(controller.overlayEntry);
+        showWindow(context, controller, url);
       },
       onTap: () {
         controller.setType(type);
@@ -173,5 +79,110 @@ class IconWidget extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void showWindow(
+    BuildContext context,
+    HomeController controller,
+    String url,
+  ) {
+    if (type == TypeModel.github) {
+      controller.launchUrlNew(url);
+      return;
+    }
+    final size = MediaQuery.of(context).size;
+    controller.setType(type);
+    controller.overlayEntryMenu = OverlayEntry(
+      builder: (context) => Watch(
+        (_) => Positioned(
+          key: Key("Certificate"),
+          top: controller.offsetWindow.dy,
+          left: controller.offsetWindow.dx,
+          width: size.width,
+          height: size.height * .89,
+          child: GestureDetector(
+            onPanUpdate: (details) {
+              controller.setOffsetWindow(details.globalPosition);
+              controller.getOverlayEntryMenu?.markNeedsBuild();
+            },
+            child: url != ""
+                ? WebViewWidget(url: url, type: type)
+                : CertificateWidget(),
+          ),
+        ),
+      ),
+    );
+    controller.setShowCertificate();
+    Overlay.of(context).insert(controller.getOverlayEntryMenu!);
+  }
+
+  void showDetail(
+      HomeController controller, TapDownDetails details, BuildContext context) {
+    if (controller.overlayDetail) {
+      controller.removeOverlayDetail();
+    }
+    controller.setType(type);
+    Offset offset = details.globalPosition;
+    offset = Offset(
+      offset.dx,
+      offset.dy - 200,
+    );
+    controller.overlayEntryDetail = OverlayEntry(
+      builder: (context) => Watch(
+        (_) => Positioned(
+          key: UniqueKey(),
+          top: offset.dy,
+          left: offset.dx,
+          width: 200,
+          height: 200,
+          child: Material(
+            child: Container(
+              width: 200,
+              height: 200,
+              color: Colors.white,
+              child: Column(
+                children: [
+                  AppBar(
+                    toolbarHeight: 40,
+                    title: Text(type.toString()),
+                    automaticallyImplyLeading: false,
+                    actions: [
+                      IconButton(
+                        onPressed: () {
+                          controller.removeOverlayDetail();
+                        },
+                        icon: Icon(Icons.close),
+                      ),
+                    ],
+                  ),
+                  ListTile(
+                    title: Text(
+                      "Abrir",
+                      style: TextStyle(color: Colors.black),
+                    ),
+                    onTap: () {
+                      controller.removeOverlayDetail();
+                      showWindow(context, controller, type.url);
+                    },
+                  ),
+                  ListTile(
+                    title: Text(
+                      "Abrir em nova aba",
+                      style: TextStyle(color: Colors.black),
+                    ),
+                    onTap: () {
+                      controller.removeOverlayDetail();
+                      controller.launchUrlNew(type.url);
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+
+    Overlay.of(context).insert(controller.getOverlayEntryDetail!);
   }
 }
