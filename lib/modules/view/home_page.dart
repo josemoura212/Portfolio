@@ -20,7 +20,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> with MessageViewMixin {
   final controller = Injector.get<HomeController>();
-  final _scrollController = ScrollController();
 
   @override
   void initState() {
@@ -29,13 +28,9 @@ class _HomePageState extends State<HomePage> with MessageViewMixin {
   }
 
   @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    controller.initPosition(size);
     return Scaffold(
       extendBodyBehindAppBar: true,
       extendBody: true,
@@ -52,6 +47,34 @@ class _HomePageState extends State<HomePage> with MessageViewMixin {
                       width: 100,
                       height: 100,
                       child: IconWidget(type: TypeModel.mangatrix),
+                    ),
+                    Positioned(
+                      top: controller.position2.dy,
+                      left: controller.position2.dx,
+                      width: 100,
+                      height: 100,
+                      child: IconWidget(type: TypeModel.recibo),
+                    ),
+                    Positioned(
+                      top: controller.position3.dy,
+                      left: controller.position3.dx,
+                      width: 100,
+                      height: 100,
+                      child: IconWidget(type: TypeModel.dashboard),
+                    ),
+                    Positioned(
+                      top: controller.position4.dy,
+                      left: controller.position4.dx,
+                      width: 100,
+                      height: 100,
+                      child: IconWidget(type: TypeModel.github),
+                    ),
+                    Positioned(
+                      top: controller.position5.dy,
+                      left: controller.position5.dx,
+                      width: 100,
+                      height: 100,
+                      child: IconWidget(type: TypeModel.certificados),
                     ),
                   ],
                 ),

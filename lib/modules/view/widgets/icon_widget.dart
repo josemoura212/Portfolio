@@ -27,7 +27,7 @@ class IconWidget extends StatelessWidget {
 
     return GestureDetector(
       onPanUpdate: (details) =>
-          controller.updatePosition(details, TypeModel.mangatrix),
+          controller.updatePosition(details.globalPosition, type),
       onSecondaryTapDown: (details) {
         Offset offset = details.globalPosition;
         offset = Offset(

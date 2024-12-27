@@ -28,8 +28,8 @@ class HomeController with MessageStateMixin {
   Offset get position3 => _position3.value;
   Offset get position4 => _position4.value;
   Offset get position5 => _position5.value;
-  Size get sizeWidnow => _sizeWindow.value;
   Offset get offsetWindow => _offsetWindow.value;
+  Size get sizeWidnow => _sizeWindow.value;
   TypeModel get type => _type.value;
   bool get showCertificate => _showCertificate.value;
 
@@ -44,22 +44,61 @@ class HomeController with MessageStateMixin {
     }
   }
 
-  void updatePosition(DragUpdateDetails details, TypeModel type) {
-    Offset offset = details.globalPosition;
-    final newOffset = Offset(
+  void updatePosition(Offset offset, TypeModel type) {
+    var newOffset = Offset(
       _roundPosition(offset.dx),
       _roundPosition(offset.dy),
     );
     switch (type) {
       case TypeModel.mangatrix:
         _position1.set(newOffset, force: true);
+        if (_position2.value == newOffset ||
+            _position3.value == newOffset ||
+            _position4.value == newOffset ||
+            _position5.value == newOffset) {
+          newOffset = Offset(newOffset.dx, newOffset.dy - 100);
+        }
         break;
       case TypeModel.recibo:
+        if (_position1.value == newOffset ||
+            _position3.value == newOffset ||
+            _position4.value == newOffset ||
+            _position5.value == newOffset) {
+          newOffset = Offset(newOffset.dx, newOffset.dy - 100);
+        }
         _position2.set(newOffset, force: true);
+        break;
+      case TypeModel.dashboard:
+        if (_position1.value == newOffset ||
+            _position2.value == newOffset ||
+            _position4.value == newOffset ||
+            _position5.value == newOffset) {
+          newOffset = Offset(newOffset.dx, newOffset.dy - 100);
+        }
+        _position3.set(newOffset, force: true);
+        break;
+      case TypeModel.github:
+        if (_position1.value == newOffset ||
+            _position2.value == newOffset ||
+            _position3.value == newOffset ||
+            _position5.value == newOffset) {
+          newOffset = Offset(newOffset.dx, newOffset.dy - 100);
+        }
+        _position4.set(newOffset, force: true);
+        break;
+      case TypeModel.certificados:
+        if (_position1.value == newOffset ||
+            _position2.value == newOffset ||
+            _position3.value == newOffset ||
+            _position4.value == newOffset) {
+          newOffset = Offset(newOffset.dx, newOffset.dy - 100);
+        }
+        _position5.set(newOffset, force: true);
         break;
       default:
         break;
     }
+
     save(newOffset, type);
   }
 
@@ -72,7 +111,7 @@ class HomeController with MessageStateMixin {
   }
 
   void setSizeWindow(Size size) {
-    _sizeWindow.set(size, force: true);
+    _sizeWindow.set(Size(size.width, size.height * .9), force: true);
   }
 
   void setOffsetWindow(Offset offset) {
@@ -92,6 +131,36 @@ class HomeController with MessageStateMixin {
       offset.dx.toString(),
       offset.dy.toString(),
     ]);
+  }
+
+  void initPosition(Size size) {
+    final offset = Offset(
+      size.width / 2,
+      size.height / 2,
+    );
+    if (_position1.value == Offset.zero) {
+      updatePosition(
+          Offset(offset.dx - 300, offset.dy + 100), TypeModel.mangatrix);
+    }
+    if (_position2.value == Offset.zero) {
+      updatePosition(
+          Offset(offset.dx - 200, offset.dy + 100), TypeModel.recibo);
+    }
+    if (_position3.value == Offset.zero) {
+      updatePosition(
+          Offset(offset.dx - 100, offset.dy + 100), TypeModel.dashboard);
+    }
+    if (_position4.value == Offset.zero) {
+      updatePosition(Offset(offset.dx, offset.dy + 100), TypeModel.github);
+    }
+    if (_position5.value == Offset.zero) {
+      updatePosition(
+          Offset(offset.dx + 100, offset.dy + 100), TypeModel.certificados);
+    }
+  }
+
+  Future<void> clean() {
+    return _localStorage.clear();
   }
 
   Future<void> _init() async {
