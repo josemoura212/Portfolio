@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:portfolio/core/helpers/messages.dart';
 import 'package:portfolio/core/local_storage/local_storage.dart';
@@ -24,6 +25,7 @@ class HomeController with MessageStateMixin {
   final Signal<bool> _showCertificate = Signal<bool>(false);
   final Signal<Size> _size = Signal<Size>(Size.zero);
   final Signal<TypeModel> _type = Signal<TypeModel>(TypeModel.certificados);
+  final Signal<Offset> _position = Signal<Offset>(Offset.zero);
 
   Future<void> _launchUrl(String url) async {
     final Uri url0 = Uri.parse(url);
@@ -93,6 +95,20 @@ class HomeController with MessageStateMixin {
       ),
     );
     Overlay.of(context).insert(_overlayEntry);
+  }
+
+  double _roundPosition(double position) {
+    return (position / 100).round() * 100;
+  }
+
+  void updatePosition(DragUpdateDetails details) {
+    Offset offset = details.globalPosition;
+    _position.set(
+        Offset(
+          _roundPosition(offset.dx),
+          _roundPosition(offset.dy),
+        ),
+        force: true);
   }
 
   void _showOverlay(
@@ -260,6 +276,7 @@ class HomeController with MessageStateMixin {
   bool get showCertificate => _showCertificate.value;
   Size get size => _size.value;
   TypeModel get type => _type.value;
+  Offset get position => _position.value;
 
   void setShowCertificate() {
     _showCertificate.set(!_showCertificate.value, force: true);

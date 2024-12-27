@@ -39,71 +39,81 @@ class _HomePageState extends State<HomePage> with MessageViewMixin {
     return Scaffold(
       extendBodyBehindAppBar: true,
       extendBody: true,
-      body: Watch(
-        (_) => BackgroundImageWidget(
-          child: Column(
-            children: [
-              Flexible(
-                child: Watch(
-                  (_) => ReorderableGridView.extent(
-                    childAspectRatio: 1,
-                    maxCrossAxisExtent: size.width / 14,
-                    onReorder: controller.onReorderCallback,
-                    children: controller.generatedChildren,
-                  ),
-                ),
-              ),
-              Container(
-                decoration: const BoxDecoration(
-                  color: Colors.black54,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black54,
-                      offset: Offset(0, -4),
-                      blurRadius: 10,
-                      spreadRadius: 2,
-                    ),
+      body: BackgroundImageWidget(
+        child: Column(
+          children: [
+            Expanded(
+              child: Watch(
+                (_) => Stack(
+                  children: [
+                    Positioned(
+                      top: controller.position.dy,
+                      left: controller.position.dx,
+                      width: 100,
+                      height: 100,
+                      child: GestureDetector(
+                        onPanUpdate: controller.updatePosition,
+                        child: Container(
+                          color: Colors.red,
+                          width: 100,
+                          height: 100,
+                        ),
+                      ),
+                    )
                   ],
                 ),
-                padding: const EdgeInsets.only(
-                    top: 5, bottom: 5, left: 10, right: 10),
-                child: Watch(
-                  (_) => Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      SizedBox(
-                        height: 62,
-                        width: 100,
-                      ),
-                      controller.showCertificate
-                          ? InkWell(
-                              onTap: () {
-                                controller.maximizer();
-                              },
-                              child: Container(
-                                height: 62,
-                                width: 150,
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 10, vertical: 5),
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                child: SizedBox(
-                                  child: Image.asset(controller.type.image),
-                                ),
-                              ),
-                            )
-                          : const SizedBox.shrink(),
-                      Spacer(),
-                      ClockWidget(),
-                    ],
+              ),
+            ),
+            Container(
+              decoration: const BoxDecoration(
+                color: Colors.black54,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black54,
+                    offset: Offset(0, -4),
+                    blurRadius: 10,
+                    spreadRadius: 2,
                   ),
+                ],
+              ),
+              padding:
+                  const EdgeInsets.only(top: 5, bottom: 5, left: 10, right: 10),
+              child: Watch(
+                (_) => Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    SizedBox(
+                      height: 62,
+                      width: 100,
+                    ),
+                    controller.showCertificate
+                        ? InkWell(
+                            onTap: () {
+                              controller.maximizer();
+                            },
+                            child: Container(
+                              height: 62,
+                              width: 150,
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 10, vertical: 5),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: SizedBox(
+                                child: Image.asset(controller.type.image),
+                              ),
+                            ),
+                          )
+                        : const SizedBox.shrink(),
+                    Spacer(),
+                    ClockWidget(),
+                  ],
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
       // floatingActionButtonLocation: FloatingActionButtonLocation.startDocked,
