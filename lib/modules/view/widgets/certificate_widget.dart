@@ -1,18 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_getit/flutter_getit.dart';
-import 'package:portfolio/models/type_model.dart';
-import 'package:portfolio/modules/home_controller.dart';
-import 'package:webview_all/webview_all.dart';
+import 'package:portfolio/modules/core/home_controller.dart';
 
-class WebViewWidget extends StatelessWidget {
-  const WebViewWidget(
-      {super.key,
-      required this.overlayEntry,
-      required this.url,
-      required this.type});
+class CertificateWidget extends StatelessWidget {
+  const CertificateWidget({super.key, required this.overlayEntry});
   final OverlayEntry overlayEntry;
-  final String url;
-  final TypeModel type;
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +20,7 @@ class WebViewWidget extends StatelessWidget {
         child: Column(
           children: [
             AppBar(
-              title: Text(type.toString()),
+              title: Text('Certificados'),
               automaticallyImplyLeading: false,
               actions: [
                 IconButton(
@@ -53,7 +45,9 @@ class WebViewWidget extends StatelessWidget {
               ],
             ),
             Expanded(
-              child: Webview(url: url),
+              child: Center(
+                child: Text('Conteúdo da mini tela'),
+              ),
             ),
           ],
         ),

@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_getit/flutter_getit.dart';
-import 'package:portfolio/modules/home_controller.dart';
+import 'package:portfolio/modules/core/home_controller.dart';
 
 class BackgroundImageWidget extends StatelessWidget {
   const BackgroundImageWidget({

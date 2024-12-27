@@ -7,7 +7,7 @@ import 'package:portfolio/core/bindings/portfolio_application_bindins.dart';
 import 'package:portfolio/core/ui/loader.dart';
 import 'package:portfolio/core/ui/theme_manager.dart';
 import 'package:portfolio/core/ui/ui_config.dart';
-import 'package:portfolio/modules/home_module.dart';
+import 'package:portfolio/modules/core/home_module.dart';
 import 'package:asyncstate/asyncstate.dart' as asyncstate;
 import 'package:signals_flutter/signals_flutter.dart';
 

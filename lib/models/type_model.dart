@@ -22,7 +22,7 @@ enum TypeModel {
         _ => "",
       };
 
-  String get image => switch (this) {
+  String get icon => switch (this) {
         TypeModel.mangatrix => "assets/icons/mangatrix.png",
         TypeModel.recibo => "assets/icons/recibo-online.png",
         TypeModel.dashboard => "assets/icons/dashboard.png",

@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_getit/flutter_getit.dart';
-import 'package:portfolio/modules/widgets/background_widget.dart';
-import 'package:portfolio/modules/widgets/clock_widget.dart';
-import 'package:reorderable_grid/reorderable_grid.dart';
+import 'package:portfolio/models/type_model.dart';
+import 'package:portfolio/modules/view/widgets/background_widget.dart';
+import 'package:portfolio/modules/view/widgets/clock_widget.dart';
+import 'package:portfolio/modules/view/widgets/icon_widget.dart';
+import 'package:portfolio/modules/view/widgets/windows_icon_widget.dart';
 import 'package:signals_flutter/signals_flutter.dart';
 
 import 'package:portfolio/core/helpers/custom_fab_location.dart';
 import 'package:portfolio/core/helpers/messages.dart';
-import 'package:portfolio/modules/home_controller.dart';
+import 'package:portfolio/modules/core/home_controller.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -34,8 +36,6 @@ class _HomePageState extends State<HomePage> with MessageViewMixin {
 
   @override
   Widget build(BuildContext context) {
-    controller.generateChildrens(context);
-    final size = MediaQuery.of(context).size;
     return Scaffold(
       extendBodyBehindAppBar: true,
       extendBody: true,
@@ -47,19 +47,12 @@ class _HomePageState extends State<HomePage> with MessageViewMixin {
                 (_) => Stack(
                   children: [
                     Positioned(
-                      top: controller.position.dy,
-                      left: controller.position.dx,
+                      top: controller.position1.dy,
+                      left: controller.position1.dx,
                       width: 100,
                       height: 100,
-                      child: GestureDetector(
-                        onPanUpdate: controller.updatePosition,
-                        child: Container(
-                          color: Colors.red,
-                          width: 100,
-                          height: 100,
-                        ),
-                      ),
-                    )
+                      child: IconWidget(type: TypeModel.mangatrix),
+                    ),
                   ],
                 ),
               ),
@@ -102,7 +95,7 @@ class _HomePageState extends State<HomePage> with MessageViewMixin {
                                 borderRadius: BorderRadius.circular(10),
                               ),
                               child: SizedBox(
-                                child: Image.asset(controller.type.image),
+                                child: Image.asset(controller.type.icon),
                               ),
                             ),
                           )
@@ -118,24 +111,7 @@ class _HomePageState extends State<HomePage> with MessageViewMixin {
       ),
       // floatingActionButtonLocation: FloatingActionButtonLocation.startDocked,
       floatingActionButtonLocation: CustomFABLocation(),
-      floatingActionButton: SizedBox(
-        width: 90,
-        height: 90,
-        child: FloatingActionButton(
-          onPressed: () {},
-          backgroundColor: Colors.transparent,
-          mouseCursor: SystemMouseCursors.click,
-          foregroundColor: Colors.transparent,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(50),
-          ),
-          child: const CircleAvatar(
-            backgroundImage: AssetImage("assets/icons/windows.png"),
-            radius: 50,
-            backgroundColor: Colors.transparent,
-          ),
-        ),
-      ),
+      floatingActionButton: WindowsIconWidget(),
     );
   }
 }

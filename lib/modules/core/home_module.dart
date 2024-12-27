@@ -1,6 +1,6 @@
 import 'package:flutter_getit/flutter_getit.dart';
-import 'package:portfolio/modules/home_controller.dart';
-import 'package:portfolio/modules/home_page.dart';
+import 'package:portfolio/modules/core/home_controller.dart';
+import 'package:portfolio/modules/view/home_page.dart';
 
 class HomeModule extends FlutterGetItModule {
   @override
