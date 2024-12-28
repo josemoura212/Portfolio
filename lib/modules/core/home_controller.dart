@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:portfolio/core/helpers/messages.dart';
 import 'package:portfolio/core/local_storage/local_storage.dart';
+import 'package:portfolio/models/icon_model.dart';
 import 'package:portfolio/models/type_model.dart';
 import 'package:signals_flutter/signals_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -12,6 +13,27 @@ class HomeController with MessageStateMixin {
     _init();
   }
   final LocalStorage _localStorage;
+
+  final Signal<List<IconModel>> _icons = Signal<List<IconModel>>([]);
+  IconModel getIcon(TypeModel type) {
+    return _icons.value.firstWhere((element) => element.type == type);
+  }
+
+  List<IconModel> get icons => _icons.value;
+
+  void addIcon(List<TypeModel> models) {
+    _icons.set([
+      ..._icons.value,
+      ...models.map((e) {
+        return IconModel(
+          type: e,
+          position: getPosition(e),
+          showDetail: false,
+          showMenu: false,
+        );
+      })
+    ], force: true);
+  }
 
   final Signal<Offset> _position1 = Signal<Offset>(Offset.zero);
   final Signal<Offset> _position2 = Signal<Offset>(Offset.zero);

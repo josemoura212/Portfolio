@@ -24,6 +24,13 @@ class _HomePageState extends State<HomePage> with MessageViewMixin {
   @override
   void initState() {
     messageListener(controller);
+    controller.addIcon([
+      TypeModel.mangatrix,
+      TypeModel.recibo,
+      TypeModel.dashboard,
+      TypeModel.github,
+      TypeModel.certificados,
+    ]);
     super.initState();
   }
 
@@ -41,41 +48,15 @@ class _HomePageState extends State<HomePage> with MessageViewMixin {
               child: Watch(
                 (_) => Stack(
                   children: [
-                    Positioned(
-                      top: controller.getPosition(TypeModel.mangatrix).dy,
-                      left: controller.getPosition(TypeModel.mangatrix).dx,
-                      width: 100,
-                      height: 100,
-                      child: IconWidget(type: TypeModel.mangatrix),
-                    ),
-                    Positioned(
-                      top: controller.getPosition(TypeModel.recibo).dy,
-                      left: controller.getPosition(TypeModel.recibo).dx,
-                      width: 100,
-                      height: 100,
-                      child: IconWidget(type: TypeModel.recibo),
-                    ),
-                    Positioned(
-                      top: controller.getPosition(TypeModel.dashboard).dy,
-                      left: controller.getPosition(TypeModel.dashboard).dx,
-                      width: 100,
-                      height: 100,
-                      child: IconWidget(type: TypeModel.dashboard),
-                    ),
-                    Positioned(
-                      top: controller.getPosition(TypeModel.github).dy,
-                      left: controller.getPosition(TypeModel.github).dx,
-                      width: 100,
-                      height: 100,
-                      child: IconWidget(type: TypeModel.github),
-                    ),
-                    Positioned(
-                      top: controller.getPosition(TypeModel.certificados).dy,
-                      left: controller.getPosition(TypeModel.certificados).dx,
-                      width: 100,
-                      height: 100,
-                      child: IconWidget(type: TypeModel.certificados),
-                    ),
+                    ...controller.icons.map((e) {
+                      return Positioned(
+                        top: controller.getPosition(e.type).dy,
+                        left: controller.getPosition(e.type).dx,
+                        width: 100,
+                        height: 100,
+                        child: IconWidget(type: e.type),
+                      );
+                    }),
                   ],
                 ),
               ),
@@ -122,7 +103,7 @@ class _HomePageState extends State<HomePage> with MessageViewMixin {
                               ),
                             ),
                           )
-                        : const SizedBox.shrink(),
+                        : SizedBox.shrink(),
                     Spacer(),
                     ClockWidget(),
                   ],
