@@ -19,8 +19,6 @@ dependencies:
   shared_preferences: ^2.3.4
   signals_flutter: ^6.0.2
   top_snackbar_flutter: ^3.1.0
-  validatorless: ^1.2.4
-  reorderable_grid: ^1.0.10
   url_launcher: ^6.3.1
   webview_all: ^0.4.5
 
