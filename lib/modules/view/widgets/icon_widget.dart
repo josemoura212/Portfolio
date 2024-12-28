@@ -40,8 +40,9 @@ class IconWidget extends StatelessWidget {
             color: Colors.transparent,
             borderRadius: BorderRadius.circular(10),
             border: Border.all(
-              color:
-                  controller.type == type ? Colors.white54 : Colors.transparent,
+              color: controller.selectedType == type
+                  ? Colors.white54
+                  : Colors.transparent,
               width: 2,
             ),
           ),

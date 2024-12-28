@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:portfolio/core/helpers/messages.dart';
 import 'package:portfolio/core/local_storage/local_storage.dart';
-import 'package:portfolio/models/icon_model.dart';
+import 'package:portfolio/models/icon_model_controller.dart';
 import 'package:portfolio/models/type_model.dart';
 import 'package:signals_flutter/signals_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -9,9 +9,7 @@ import 'package:url_launcher/url_launcher.dart';
 class HomeController with MessageStateMixin {
   HomeController({
     required LocalStorage localStorage,
-  }) : _localStorage = localStorage {
-    _init();
-  }
+  }) : _localStorage = localStorage;
   final LocalStorage _localStorage;
 
   final Signal<List<IconModel>> _icons = Signal<List<IconModel>>([]);
@@ -21,48 +19,40 @@ class HomeController with MessageStateMixin {
 
   List<IconModel> get icons => _icons.value;
 
-  void addIcon(List<TypeModel> models) {
+  void addIcon(List<TypeModel> models, Size size) {
+    initPosition(size);
     _icons.set([
       ..._icons.value,
       ...models.map((e) {
         return IconModel(
           type: e,
-          position: getPosition(e),
+          position: Offset.zero,
           showDetail: false,
           showMenu: false,
         );
       })
     ], force: true);
+    _init();
   }
 
-  final Signal<Offset> _position1 = Signal<Offset>(Offset.zero);
-  final Signal<Offset> _position2 = Signal<Offset>(Offset.zero);
-  final Signal<Offset> _position3 = Signal<Offset>(Offset.zero);
-  final Signal<Offset> _position4 = Signal<Offset>(Offset.zero);
-  final Signal<Offset> _position5 = Signal<Offset>(Offset.zero);
   final Signal<OverlayEntry?> _overlayEntryDetail = Signal<OverlayEntry?>(null);
   final Signal<OverlayEntry?> _overlayEntryMenu = Signal<OverlayEntry?>(null);
 
-  final Signal<TypeModel?> _type = Signal<TypeModel?>(null);
+  final Signal<TypeModel?> _selectedType = Signal<TypeModel?>(null);
   final Signal<Size> _sizeWindow = Signal<Size>(Size.zero);
   final Signal<Offset> _offsetWindow = Signal<Offset>(Offset.zero);
   final Signal<bool> _showCertificate = Signal<bool>(false);
   final Signal<bool> _overlayDetail = Signal<bool>(false);
 
-  Offset getPosition(TypeModel type) => switch (type) {
-        TypeModel.mangatrix => _position1.value,
-        TypeModel.recibo => _position2.value,
-        TypeModel.dashboard => _position3.value,
-        TypeModel.github => _position4.value,
-        TypeModel.certificados => _position5.value,
-      };
+  Offset getPosition(TypeModel type) =>
+      _icons.value.firstWhere((element) => element.type == type).position;
 
   OverlayEntry? get getOverlayEntryDetail => _overlayEntryDetail.value;
   OverlayEntry? get getOverlayEntryMenu => _overlayEntryMenu.value;
 
   Offset get offsetWindow => _offsetWindow.value;
   Size get sizeWidnow => _sizeWindow.value;
-  TypeModel? get type => _type.value;
+  TypeModel? get selectedType => _selectedType.value;
   bool get showCertificate => _showCertificate.value;
   bool get overlayDetail => _overlayDetail.value;
 
@@ -88,11 +78,18 @@ class HomeController with MessageStateMixin {
     return (position / 100).round() * 100;
   }
 
-  Future<void> launchUrlNew(String url) async {
-    final Uri url0 = Uri.parse(url);
-    if (!await launchUrl(url0)) {
-      throw Exception('Could not launch $url');
-    }
+  void _setPosition(Offset offset, TypeModel type) {
+    _icons.set(
+      _icons.value.map((e) {
+        if (e.type == type) {
+          return e.copyWith(position: offset);
+        }
+        return e;
+      }).toList(),
+      force: true,
+    );
+
+    save(offset, type);
   }
 
   void updatePosition(Offset offset, TypeModel type) {
@@ -102,55 +99,43 @@ class HomeController with MessageStateMixin {
     );
     switch (type) {
       case TypeModel.mangatrix:
-        if (_position2.value == newOffset ||
-            _position3.value == newOffset ||
-            _position4.value == newOffset ||
-            _position5.value == newOffset) {
+        if (_icons.value.any((element) =>
+            element.position == newOffset && element.type != type)) {
           newOffset = Offset(newOffset.dx, newOffset.dy - 100);
         }
-        _position1.set(newOffset, force: true);
+        _setPosition(newOffset, type);
         break;
       case TypeModel.recibo:
-        if (_position1.value == newOffset ||
-            _position3.value == newOffset ||
-            _position4.value == newOffset ||
-            _position5.value == newOffset) {
+        if (_icons.value.any((element) =>
+            element.position == newOffset && element.type != type)) {
           newOffset = Offset(newOffset.dx, newOffset.dy - 100);
         }
-        _position2.set(newOffset, force: true);
+        _setPosition(newOffset, type);
         break;
       case TypeModel.dashboard:
-        if (_position1.value == newOffset ||
-            _position2.value == newOffset ||
-            _position4.value == newOffset ||
-            _position5.value == newOffset) {
+        if (_icons.value.any((element) =>
+            element.position == newOffset && element.type != type)) {
           newOffset = Offset(newOffset.dx, newOffset.dy - 100);
         }
-        _position3.set(newOffset, force: true);
+        _setPosition(newOffset, type);
         break;
       case TypeModel.github:
-        if (_position1.value == newOffset ||
-            _position2.value == newOffset ||
-            _position3.value == newOffset ||
-            _position5.value == newOffset) {
+        if (_icons.value.any((element) =>
+            element.position == newOffset && element.type != type)) {
           newOffset = Offset(newOffset.dx, newOffset.dy - 100);
         }
-        _position4.set(newOffset, force: true);
+        _setPosition(newOffset, type);
         break;
       case TypeModel.certificados:
-        if (_position1.value == newOffset ||
-            _position2.value == newOffset ||
-            _position3.value == newOffset ||
-            _position4.value == newOffset) {
+        if (_icons.value.any((element) =>
+            element.position == newOffset && element.type != type)) {
           newOffset = Offset(newOffset.dx, newOffset.dy - 100);
         }
-        _position5.set(newOffset, force: true);
+        _setPosition(newOffset, type);
         break;
       default:
         break;
     }
-
-    save(newOffset, type);
   }
 
   void setShowCertificate() {
@@ -158,11 +143,11 @@ class HomeController with MessageStateMixin {
   }
 
   void setType(TypeModel type) {
-    _type.set(type, force: true);
+    _selectedType.set(type, force: true);
   }
 
   void removeType() {
-    _type.set(null, force: true);
+    _selectedType.set(null, force: true);
   }
 
   void setSizeWindow(Size size) {
@@ -193,24 +178,12 @@ class HomeController with MessageStateMixin {
       size.width / 2,
       size.height / 2,
     );
-    if (_position1.value == Offset.zero) {
-      updatePosition(
-          Offset(offset.dx - 300, offset.dy + 100), TypeModel.mangatrix);
-    }
-    if (_position2.value == Offset.zero) {
-      updatePosition(
-          Offset(offset.dx - 200, offset.dy + 100), TypeModel.recibo);
-    }
-    if (_position3.value == Offset.zero) {
-      updatePosition(
-          Offset(offset.dx - 100, offset.dy + 100), TypeModel.dashboard);
-    }
-    if (_position4.value == Offset.zero) {
-      updatePosition(Offset(offset.dx, offset.dy + 100), TypeModel.github);
-    }
-    if (_position5.value == Offset.zero) {
-      updatePosition(
-          Offset(offset.dx + 100, offset.dy + 100), TypeModel.certificados);
+    var i = offset.dx - 200;
+    for (var element in _icons.value) {
+      if (element.position == Offset.zero) {
+        updatePosition(Offset(i, offset.dy + 100), element.type);
+        i += 100;
+      }
     }
   }
 
@@ -235,23 +208,30 @@ class HomeController with MessageStateMixin {
         );
         switch (i) {
           case 0:
-            _position1.set(offset, force: true);
+            _setPosition(offset, TypeModel.mangatrix);
             break;
           case 1:
-            _position2.set(offset, force: true);
+            _setPosition(offset, TypeModel.recibo);
             break;
           case 2:
-            _position3.set(offset, force: true);
+            _setPosition(offset, TypeModel.dashboard);
             break;
           case 3:
-            _position4.set(offset, force: true);
+            _setPosition(offset, TypeModel.github);
             break;
           case 4:
-            _position5.set(offset, force: true);
+            _setPosition(offset, TypeModel.certificados);
             break;
         }
         i++;
       }
+    }
+  }
+
+  Future<void> launchUrlNew(String url) async {
+    final Uri url0 = Uri.parse(url);
+    if (!await launchUrl(url0)) {
+      throw Exception('Could not launch $url');
     }
   }
 

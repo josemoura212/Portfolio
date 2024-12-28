@@ -24,20 +24,19 @@ class _HomePageState extends State<HomePage> with MessageViewMixin {
   @override
   void initState() {
     messageListener(controller);
-    controller.addIcon([
-      TypeModel.mangatrix,
-      TypeModel.recibo,
-      TypeModel.dashboard,
-      TypeModel.github,
-      TypeModel.certificados,
-    ]);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    controller.initPosition(size);
+    controller.addIcon([
+      TypeModel.mangatrix,
+      TypeModel.recibo,
+      TypeModel.dashboard,
+      TypeModel.github,
+      TypeModel.certificados,
+    ], size);
     return Scaffold(
       extendBodyBehindAppBar: true,
       extendBody: true,
@@ -99,7 +98,8 @@ class _HomePageState extends State<HomePage> with MessageViewMixin {
                                 borderRadius: BorderRadius.circular(10),
                               ),
                               child: SizedBox(
-                                child: Image.asset(controller.type!.icon),
+                                child:
+                                    Image.asset(controller.selectedType!.icon),
                               ),
                             ),
                           )
