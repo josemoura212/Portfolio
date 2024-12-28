@@ -83,8 +83,8 @@ class _HomePageState extends State<HomePage> with MessageViewMixin {
                       height: 62,
                       width: 100,
                     ),
-                    ...controller.icons.where((e) => e.showMenu).map((e) {
-                      return SideBarItem(controller: controller, type: e.type);
+                    ...controller.showMenu.map((e) {
+                      return SideBarItem(controller: controller, type: e);
                     }),
                     Spacer(),
                     ClockWidget(),

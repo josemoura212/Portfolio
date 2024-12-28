@@ -12,8 +12,6 @@ class IconModel {
   final Size? size;
   final OverlayEntry? overlayEntry;
   final Offset overlayPosition;
-  final bool showDetail;
-  final bool showMenu;
 
   IconModel({
     required this.type,
@@ -21,8 +19,6 @@ class IconModel {
     this.size,
     this.overlayEntry,
     this.overlayPosition = Offset.zero,
-    this.showDetail = false,
-    this.showMenu = false,
   })  : name = type.name,
         icon = type.icon,
         url = type.url;
@@ -45,8 +41,6 @@ class IconModel {
       size: size != null ? size() : this.size,
       overlayEntry: overlayEntry != null ? overlayEntry() : this.overlayEntry,
       overlayPosition: overlayPosition ?? this.overlayPosition,
-      showDetail: showDetail ?? this.showDetail,
-      showMenu: showMenu ?? this.showMenu,
     );
   }
 

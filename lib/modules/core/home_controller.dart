@@ -27,8 +27,6 @@ class HomeController with MessageStateMixin {
           type: e,
           position: Offset.zero,
           overlayPosition: Offset.zero,
-          showDetail: false,
-          showMenu: false,
         );
       })
     ], force: true);
@@ -37,24 +35,23 @@ class HomeController with MessageStateMixin {
   }
 
   final Signal<OverlayEntry?> _overlayEntryDetail = Signal<OverlayEntry?>(null);
-
-  Offset offsetWindow(TypeModel type) => _icons.value
-      .firstWhere((element) => element.type == type)
-      .overlayPosition;
+  OverlayEntry? get getOverlayEntryDetail => _overlayEntryDetail.value;
+  final Signal<bool> _overlayDetail = Signal<bool>(false);
+  bool get overlayDetail => _overlayDetail.value;
+  final Signal<List<TypeModel>> _showMenu = Signal<List<TypeModel>>([]);
+  List<TypeModel> get showMenu => _showMenu.value;
 
   final Signal<TypeModel?> _selectedType = Signal<TypeModel?>(null);
-  final Signal<Size> _sizeWindow = Signal<Size>(Size.zero);
-  final Signal<bool> _overlayDetail = Signal<bool>(false);
+  TypeModel? get selectedType => _selectedType.value;
 
   Offset getPosition(TypeModel type) =>
       _icons.value.firstWhere((element) => element.type == type).position;
 
-  OverlayEntry? get getOverlayEntryDetail => _overlayEntryDetail.value;
   OverlayEntry? getOverlayEntryMenu(TypeModel type) =>
       _icons.value.firstWhere((element) => element.type == type).overlayEntry;
-
-  TypeModel? get selectedType => _selectedType.value;
-  bool get overlayDetail => _overlayDetail.value;
+  Offset offsetWindow(TypeModel type) => _icons.value
+      .firstWhere((element) => element.type == type)
+      .overlayPosition;
 
   set overlayEntryDetail(OverlayEntry overlayEntry) {
     _overlayEntryDetail.set(overlayEntry, force: true);
@@ -67,6 +64,7 @@ class HomeController with MessageStateMixin {
   }
 
   void setOverlayEntryMenu(OverlayEntry overlayEntry, TypeModel type) {
+    _showMenu.set([..._showMenu.value, type], force: true);
     _icons.set(
       _icons.value.map((e) {
         if (e.type == type) {
@@ -79,6 +77,7 @@ class HomeController with MessageStateMixin {
   }
 
   void removeOverlayMenu(TypeModel type) {
+    _showMenu.set(_showMenu.value.where((element) => element != type).toList());
     final overlay =
         _icons.value.firstWhere((element) => element.type == type).overlayEntry;
 
@@ -132,10 +131,6 @@ class HomeController with MessageStateMixin {
 
   void removeType() {
     _selectedType.set(null, force: true);
-  }
-
-  void setSizeWindow(Size size) {
-    _sizeWindow.set(Size(size.width, size.height * .9), force: true);
   }
 
   void setOffsetOverlayMenu(Offset offset, TypeModel type) {
