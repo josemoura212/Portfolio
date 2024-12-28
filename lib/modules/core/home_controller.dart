@@ -13,47 +13,47 @@ class HomeController with MessageStateMixin {
   final LocalStorage _localStorage;
 
   final Signal<List<IconModel>> _icons = Signal<List<IconModel>>([]);
+  List<IconModel> get icons => _icons.value;
+
   IconModel getIcon(TypeModel type) {
     return _icons.value.firstWhere((element) => element.type == type);
   }
 
-  List<IconModel> get icons => _icons.value;
-
   void addIcon(List<TypeModel> models, Size size) {
-    initPosition(size);
     _icons.set([
       ..._icons.value,
       ...models.map((e) {
         return IconModel(
           type: e,
           position: Offset.zero,
+          overlayPosition: Offset.zero,
           showDetail: false,
           showMenu: false,
         );
       })
     ], force: true);
     _init();
+    initPosition(size);
   }
 
   final Signal<OverlayEntry?> _overlayEntryDetail = Signal<OverlayEntry?>(null);
-  final Signal<OverlayEntry?> _overlayEntryMenu = Signal<OverlayEntry?>(null);
+
+  Offset offsetWindow(TypeModel type) => _icons.value
+      .firstWhere((element) => element.type == type)
+      .overlayPosition;
 
   final Signal<TypeModel?> _selectedType = Signal<TypeModel?>(null);
   final Signal<Size> _sizeWindow = Signal<Size>(Size.zero);
-  final Signal<Offset> _offsetWindow = Signal<Offset>(Offset.zero);
-  final Signal<bool> _showCertificate = Signal<bool>(false);
   final Signal<bool> _overlayDetail = Signal<bool>(false);
 
   Offset getPosition(TypeModel type) =>
       _icons.value.firstWhere((element) => element.type == type).position;
 
   OverlayEntry? get getOverlayEntryDetail => _overlayEntryDetail.value;
-  OverlayEntry? get getOverlayEntryMenu => _overlayEntryMenu.value;
+  OverlayEntry? getOverlayEntryMenu(TypeModel type) =>
+      _icons.value.firstWhere((element) => element.type == type).overlayEntry;
 
-  Offset get offsetWindow => _offsetWindow.value;
-  Size get sizeWidnow => _sizeWindow.value;
   TypeModel? get selectedType => _selectedType.value;
-  bool get showCertificate => _showCertificate.value;
   bool get overlayDetail => _overlayDetail.value;
 
   set overlayEntryDetail(OverlayEntry overlayEntry) {
@@ -61,17 +61,39 @@ class HomeController with MessageStateMixin {
     _overlayDetail.set(true, force: true);
   }
 
-  set overlayEntryMenu(OverlayEntry overlayEntry) {
-    _overlayEntryMenu.set(overlayEntry, force: true);
-  }
-
   void removeOverlayDetail() {
     _overlayEntryDetail.value?.remove();
     _overlayDetail.set(false, force: true);
   }
 
-  void removeOverlayMenu() {
-    _overlayEntryMenu.value?.remove();
+  void setOverlayEntryMenu(OverlayEntry overlayEntry, TypeModel type) {
+    _icons.set(
+      _icons.value.map((e) {
+        if (e.type == type) {
+          return e.copyWith(overlayEntry: () => overlayEntry, showMenu: true);
+        }
+        return e;
+      }).toList(),
+      force: true,
+    );
+  }
+
+  void removeOverlayMenu(TypeModel type) {
+    final overlay =
+        _icons.value.firstWhere((element) => element.type == type).overlayEntry;
+
+    if (overlay != null) {
+      overlay.remove();
+    }
+    _icons.set(
+      _icons.value.map((e) {
+        if (e.type == type) {
+          return e.copyWith(overlayEntry: null, showMenu: false);
+        }
+        return e;
+      }).toList(),
+      force: true,
+    );
   }
 
   double _roundPosition(double position) {
@@ -97,52 +119,14 @@ class HomeController with MessageStateMixin {
       _roundPosition(offset.dx),
       _roundPosition(offset.dy),
     );
-    switch (type) {
-      case TypeModel.mangatrix:
-        if (_icons.value.any((element) =>
-            element.position == newOffset && element.type != type)) {
-          newOffset = Offset(newOffset.dx, newOffset.dy - 100);
-        }
-        _setPosition(newOffset, type);
-        break;
-      case TypeModel.recibo:
-        if (_icons.value.any((element) =>
-            element.position == newOffset && element.type != type)) {
-          newOffset = Offset(newOffset.dx, newOffset.dy - 100);
-        }
-        _setPosition(newOffset, type);
-        break;
-      case TypeModel.dashboard:
-        if (_icons.value.any((element) =>
-            element.position == newOffset && element.type != type)) {
-          newOffset = Offset(newOffset.dx, newOffset.dy - 100);
-        }
-        _setPosition(newOffset, type);
-        break;
-      case TypeModel.github:
-        if (_icons.value.any((element) =>
-            element.position == newOffset && element.type != type)) {
-          newOffset = Offset(newOffset.dx, newOffset.dy - 100);
-        }
-        _setPosition(newOffset, type);
-        break;
-      case TypeModel.certificados:
-        if (_icons.value.any((element) =>
-            element.position == newOffset && element.type != type)) {
-          newOffset = Offset(newOffset.dx, newOffset.dy - 100);
-        }
-        _setPosition(newOffset, type);
-        break;
-      default:
-        break;
+    if (_icons.value.any(
+        (element) => element.position == newOffset && element.type != type)) {
+      newOffset = Offset(newOffset.dx, newOffset.dy - 100);
     }
+    _setPosition(newOffset, type);
   }
 
-  void setShowCertificate() {
-    _showCertificate.set(!_showCertificate.value, force: true);
-  }
-
-  void setType(TypeModel type) {
+  void selectType(TypeModel type) {
     _selectedType.set(type, force: true);
   }
 
@@ -154,16 +138,40 @@ class HomeController with MessageStateMixin {
     _sizeWindow.set(Size(size.width, size.height * .9), force: true);
   }
 
-  void setOffsetWindow(Offset offset) {
-    _offsetWindow.set(offset, force: true);
+  void setOffsetOverlayMenu(Offset offset, TypeModel type) {
+    _icons.set(
+      _icons.value.map((e) {
+        if (e.type == type) {
+          return e.copyWith(overlayPosition: offset);
+        }
+        return e;
+      }).toList(),
+      force: true,
+    );
   }
 
-  void minimizer() {
-    _offsetWindow.set(Offset(1000, 1000), force: true);
+  void minimizer(TypeModel type) {
+    _icons.set(
+      _icons.value.map((e) {
+        if (e.type == type) {
+          return e.copyWith(overlayPosition: Offset(1000, 1000));
+        }
+        return e;
+      }).toList(),
+      force: true,
+    );
   }
 
-  void maximizer() {
-    _offsetWindow.set(Offset(0, 0), force: true);
+  void maximizer(TypeModel type) {
+    _icons.set(
+      _icons.value.map((e) {
+        if (e.type == type) {
+          return e.copyWith(overlayPosition: Offset.zero);
+        }
+        return e;
+      }).toList(),
+      force: true,
+    );
   }
 
   Future<void> save(Offset offset, TypeModel type) async {

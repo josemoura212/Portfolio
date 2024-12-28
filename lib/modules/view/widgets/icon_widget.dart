@@ -32,7 +32,7 @@ class IconWidget extends StatelessWidget {
         showWindow(context, controller, url);
       },
       onTap: () {
-        controller.setType(type);
+        controller.selectType(type);
       },
       child: Watch(
         (_) => Container(
@@ -92,29 +92,30 @@ class IconWidget extends StatelessWidget {
       return;
     }
     final size = MediaQuery.of(context).size;
-    controller.setType(type);
-    controller.overlayEntryMenu = OverlayEntry(
-      builder: (context) => Watch(
-        (_) => Positioned(
-          key: Key("Certificate"),
-          top: controller.offsetWindow.dy,
-          left: controller.offsetWindow.dx,
-          width: size.width,
-          height: size.height * .89,
-          child: GestureDetector(
-            onPanUpdate: (details) {
-              controller.setOffsetWindow(details.globalPosition);
-              controller.getOverlayEntryMenu?.markNeedsBuild();
-            },
-            child: url != ""
-                ? WebViewWidget(url: url, type: type)
-                : CertificateWidget(),
+    controller.selectType(type);
+    controller.setOverlayEntryMenu(
+        OverlayEntry(
+          builder: (context) => Watch(
+            (_) => Positioned(
+              key: Key("Certificate"),
+              top: controller.offsetWindow(type).dy,
+              left: controller.offsetWindow(type).dx,
+              width: size.width,
+              height: size.height * .89,
+              child: GestureDetector(
+                onPanUpdate: (details) {
+                  controller.setOffsetOverlayMenu(details.globalPosition, type);
+                  controller.getOverlayEntryMenu(type)?.markNeedsBuild();
+                },
+                child: url != ""
+                    ? WebViewWidget(url: url, type: type)
+                    : CertificateWidget(),
+              ),
+            ),
           ),
         ),
-      ),
-    );
-    controller.setShowCertificate();
-    Overlay.of(context).insert(controller.getOverlayEntryMenu!);
+        type);
+    Overlay.of(context).insert(controller.getOverlayEntryMenu(type)!);
   }
 
   void showDetail(
@@ -122,7 +123,7 @@ class IconWidget extends StatelessWidget {
     if (controller.overlayDetail) {
       controller.removeOverlayDetail();
     }
-    controller.setType(type);
+    controller.selectType(type);
     Offset offset = details.globalPosition;
     offset = Offset(
       offset.dx,

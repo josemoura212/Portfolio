@@ -83,27 +83,9 @@ class _HomePageState extends State<HomePage> with MessageViewMixin {
                       height: 62,
                       width: 100,
                     ),
-                    controller.showCertificate
-                        ? InkWell(
-                            onTap: () {
-                              controller.maximizer();
-                            },
-                            child: Container(
-                              height: 62,
-                              width: 150,
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 10, vertical: 5),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: SizedBox(
-                                child:
-                                    Image.asset(controller.selectedType!.icon),
-                              ),
-                            ),
-                          )
-                        : SizedBox.shrink(),
+                    ...controller.icons.where((e) => e.showMenu).map((e) {
+                      return SideBarItem(controller: controller, type: e.type);
+                    }),
                     Spacer(),
                     ClockWidget(),
                   ],
@@ -116,6 +98,38 @@ class _HomePageState extends State<HomePage> with MessageViewMixin {
       // floatingActionButtonLocation: FloatingActionButtonLocation.startDocked,
       floatingActionButtonLocation: CustomFABLocation(),
       floatingActionButton: WindowsIconWidget(),
+    );
+  }
+}
+
+class SideBarItem extends StatelessWidget {
+  const SideBarItem({
+    super.key,
+    required this.controller,
+    required this.type,
+  });
+
+  final HomeController controller;
+  final TypeModel type;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: () {
+        controller.maximizer(type);
+      },
+      child: Container(
+        height: 62,
+        width: 150,
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: SizedBox(
+          child: Image.asset(controller.getIcon(type).icon),
+        ),
+      ),
     );
   }
 }

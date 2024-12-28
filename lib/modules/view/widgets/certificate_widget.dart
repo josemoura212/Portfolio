@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_getit/flutter_getit.dart';
+import 'package:portfolio/models/type_model.dart';
 import 'package:portfolio/modules/core/home_controller.dart';
 
 class CertificateWidget extends StatelessWidget {
@@ -24,21 +25,20 @@ class CertificateWidget extends StatelessWidget {
               actions: [
                 IconButton(
                   onPressed: () {
-                    controller.minimizer();
+                    controller.minimizer(TypeModel.certificados);
                   },
                   icon: Icon(Icons.minimize),
                 ),
                 IconButton(
                   onPressed: () {
-                    controller.maximizer();
+                    controller.maximizer(TypeModel.certificados);
                   },
                   icon: Icon(Icons.fullscreen),
                 ),
                 IconButton(
                   icon: Icon(Icons.close),
                   onPressed: () {
-                    controller.removeOverlayMenu();
-                    controller.setShowCertificate();
+                    controller.removeOverlayMenu(TypeModel.certificados);
                   },
                 ),
               ],

@@ -11,6 +11,7 @@ class IconModel {
   final Offset position;
   final Size? size;
   final OverlayEntry? overlayEntry;
+  final Offset overlayPosition;
   final bool showDetail;
   final bool showMenu;
 
@@ -19,6 +20,7 @@ class IconModel {
     this.position = Offset.zero,
     this.size,
     this.overlayEntry,
+    this.overlayPosition = Offset.zero,
     this.showDetail = false,
     this.showMenu = false,
   })  : name = type.name,
@@ -33,6 +35,7 @@ class IconModel {
     Offset? position,
     ValueGetter<Size?>? size,
     ValueGetter<OverlayEntry?>? overlayEntry,
+    Offset? overlayPosition,
     bool? showDetail,
     bool? showMenu,
   }) {
@@ -41,6 +44,7 @@ class IconModel {
       position: position ?? this.position,
       size: size != null ? size() : this.size,
       overlayEntry: overlayEntry != null ? overlayEntry() : this.overlayEntry,
+      overlayPosition: overlayPosition ?? this.overlayPosition,
       showDetail: showDetail ?? this.showDetail,
       showMenu: showMenu ?? this.showMenu,
     );

@@ -28,21 +28,20 @@ class WebViewWidget extends StatelessWidget {
               actions: [
                 IconButton(
                   onPressed: () {
-                    controller.minimizer();
+                    controller.minimizer(type);
                   },
                   icon: Icon(Icons.minimize),
                 ),
                 IconButton(
                   onPressed: () {
-                    controller.maximizer();
+                    controller.maximizer(type);
                   },
                   icon: Icon(Icons.fullscreen),
                 ),
                 IconButton(
                   icon: Icon(Icons.close),
                   onPressed: () {
-                    controller.removeOverlayMenu();
-                    controller.setShowCertificate();
+                    controller.removeOverlayMenu(type);
                   },
                 ),
               ],
